@@ -1,0 +1,31 @@
+{
+  "name": "@thedolphinos/cell",
+  "version": "0.1.0",
+  "description": "A framework for Node.js to build server side applications.",
+  "keywords": [
+    "dolphinos",
+    "framework",
+    "server",
+    "server side"
+  ],
+  "homepage": "https://github.com/thedolphinos/cell",
+  "bugs": {
+    "url": "https://github.com/thedolphinos/cell/issues",
+    "email": "project@dolphinos.com"
+  },
+  "license": "MIT",
+  "contributors": [
+    "Onur Çipe <onur@dolphinos.com>",
+    "Selma Çipe <selma@dolphinos.com>"
+  ],
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thedolphinos/cell.git"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
