@@ -1,9 +1,11 @@
 "use strict";
 
 const Cell = require("./lib/core/Cell");
-const DbSafe = require("./lib/safes/DbSafe");
+const Schema = require("./lib/db/Schema");
+const DbService = require("./lib/db/DbService");
 
 module.exports = {
   Cell,
-  DbSafe
+  Schema,
+  DbService
 };
