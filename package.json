@@ -1,6 +1,6 @@
 {
   "name": "@thedolphinos/cell",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A framework for Node.js to build server side applications.",
   "keywords": [
     "dolphinos",
@@ -24,7 +24,7 @@
     "url": "https://github.com/thedolphinos/cell.git"
   },
   "scripts": {
-    "start:dev": "require-self && nodemon index.js"
+    "start:dev": "require-self && nodemon samples/index.js"
   },
   "dependencies": {
     "@thedolphinos/error4js": "^0.2.1",
