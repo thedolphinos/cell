@@ -1,6 +1,6 @@
 {
   "name": "@thedolphinos/cell",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "A framework for Node.js to build server side applications.",
   "keywords": [
     "dolphinos",
@@ -27,10 +27,10 @@
     "start:dev": "require-self && nodemon samples/index.js"
   },
   "dependencies": {
-    "@thedolphinos/error4js": "^0.2.1",
+    "@thedolphinos/error4js": "^0.3.0",
     "@thedolphinos/utility4js": "^0.7.3",
     "express": "^4.17.1",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.20",
     "mongodb": "^3.6.0"
   },
   "devDependencies": {
