@@ -6,8 +6,9 @@ const DataType = require("./lib/db/DataType");
 const Schema = require("./lib/db/Schema");
 const DbService = require("./lib/db/DbService");
 const RouteHelper = require("./lib/helpers/RouteHelper");
-const ControllerHelper = require("./lib/helpers/ControllerHelper");
+const Controller = require("./lib/controllers/Controller");
 const AuthController = require("./lib/controllers/AuthController");
+const CrudController = require("./lib/controllers/CrudController");
 
 module.exports = {
   Cell,
@@ -19,6 +20,7 @@ module.exports = {
   DbService,
 
   RouteHelper,
-  ControllerHelper,
-  AuthController
+  Controller,
+  AuthController,
+  CrudController
 };
