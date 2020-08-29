@@ -5,7 +5,6 @@ const DbSafe = require("./lib/safes/DbSafe");
 const Schema = require("./lib/db/Schema");
 const DbOperation = require("./lib/db/DbOperation");
 const ApplicationService = require("./lib/services/ApplicationService");
-const CrudApplicationService = require("./lib/services/CrudApplicationService");
 const CrudControllerService = require("./lib/services/CrudControllerService");
 const Controller = require("./lib/core/Controller");
 const AuthController = require("./lib/controllers/AuthController");
@@ -21,7 +20,6 @@ module.exports = {
   DbOperation,
 
   ApplicationService,
-  CrudApplicationService,
   CrudControllerService,
 
   Controller,
