@@ -3,12 +3,14 @@
 const Cell = require("./lib/core/Cell");
 const DbSafe = require("./lib/safes/DbSafe");
 const Schema = require("./lib/db/Schema");
-const DbService = require("./lib/db/DbService");
-const Service = require("./lib/core/Service");
-const RouteHelper = require("./lib/helpers/RouteHelper");
-const Controller = require("./lib/controllers/Controller");
+const DbOperation = require("./lib/db/DbOperation");
+const ApplicationService = require("./lib/services/ApplicationService");
+const CrudApplicationService = require("./lib/services/CrudApplicationService");
+const CrudControllerService = require("./lib/services/CrudControllerService");
+const Controller = require("./lib/core/Controller");
 const AuthController = require("./lib/controllers/AuthController");
 const CrudController = require("./lib/controllers/CrudController");
+const RouteHelper = require("./lib/helpers/RouteHelper");
 
 module.exports = {
   Cell,
@@ -16,12 +18,15 @@ module.exports = {
   DbSafe,
 
   Schema,
-  DbService,
+  DbOperation,
 
-  Service,
+  ApplicationService,
+  CrudApplicationService,
+  CrudControllerService,
 
-  RouteHelper,
   Controller,
   AuthController,
-  CrudController
+  CrudController,
+
+  RouteHelper
 };
