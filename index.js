@@ -1,6 +1,7 @@
 "use strict";
 
 const Cell = require("./lib/core/Cell");
+const DbConnectionSafe = require("./lib/safes/DbConnectionSafe");
 const DbSafe = require("./lib/safes/DbSafe");
 const Schema = require("./lib/db/Schema");
 const DbOperation = require("./lib/db/DbOperation");
@@ -14,6 +15,7 @@ const RouteHelper = require("./lib/helpers/RouteHelper");
 module.exports = {
   Cell,
 
+  DbConnectionSafe,
   DbSafe,
 
   Schema,
