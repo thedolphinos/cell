@@ -15,7 +15,6 @@ const RouteHelper = require("./lib/helpers/RouteHelper");
 module.exports = {
   Cell,
 
-  DbConnectionSafe,
   DbSafe,
 
   Schema,
@@ -28,5 +27,7 @@ module.exports = {
   AuthController,
   CrudController,
 
-  RouteHelper
+  RouteHelper,
+
+  startSession: () => DbConnectionSafe.get().mongoClient.startSession()
 };
