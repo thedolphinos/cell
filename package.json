@@ -1,6 +1,6 @@
 {
   "name": "@thedolphinos/cell",
-  "version": "0.50.1",
+  "version": "0.51.0",
   "description": "A framework for Node.js to build server side applications.",
   "keywords": [
     "dolphinos",
