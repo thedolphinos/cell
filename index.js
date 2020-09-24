@@ -1,7 +1,6 @@
 "use strict";
 
 const Cell = require("./lib/core/Cell");
-const DbConnectionSafe = require("./lib/safes/DbConnectionSafe");
 const DbSafe = require("./lib/safes/DbSafe");
 const LanguageSafe = require("./lib/safes/LanguageSafe");
 const Schema = require("./lib/db/Schema");
@@ -31,7 +30,5 @@ module.exports = {
   AuthController,
   CrudController,
 
-  RouteHelper,
-
-  startSession: () => DbConnectionSafe.get().mongoClient.startSession()
+  RouteHelper
 };
