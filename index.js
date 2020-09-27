@@ -1,6 +1,7 @@
 "use strict";
 
 const Cell = require("./lib/core/Cell");
+const Error = require("@thedolphinos/error4js"); // this is exported due to node's duplicate module imports which causes reference problems during instanceof checks.
 const DbSafe = require("./lib/safes/DbSafe");
 const LanguageSafe = require("./lib/safes/LanguageSafe");
 const Schema = require("./lib/db/Schema");
@@ -15,6 +16,7 @@ const RouteHelper = require("./lib/helpers/RouteHelper");
 
 module.exports = {
   Cell,
+  Error,
 
   DbSafe,
   LanguageSafe,
