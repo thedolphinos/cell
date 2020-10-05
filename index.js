@@ -6,6 +6,7 @@ const DbSafe = require("./lib/safes/DbSafe");
 const LanguageSafe = require("./lib/safes/LanguageSafe");
 const Schema = require("./lib/db/Schema");
 const DbOperation = require("./lib/db/DbOperation");
+const SessionManager = require("./lib/db/SessionManager");
 const DbService = require("./lib/services/DbService");
 const ApplicationService = require("./lib/services/ApplicationService");
 const ControllerService = require("./lib/services/ControllerService");
@@ -23,6 +24,7 @@ module.exports = {
 
   Schema,
   DbOperation,
+  SessionManager,
 
   DbService,
   ApplicationService,
