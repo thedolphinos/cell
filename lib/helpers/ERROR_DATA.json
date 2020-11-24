@@ -1,0 +1,75 @@
+{
+  "DOCUMENT_INVALID_VERSION": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "The requested documents latest version is $0. You have the version $1."
+    },
+    "statusCode": 400
+  },
+  "DOCUMENT_MODIFIED": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "The requested document has been modified. The latest version is $0. You have the version $1."
+    },
+    "statusCode": 400
+  },
+  "AUTH_DATA_MISSING": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "Authorization data is missing."
+    },
+    "statusCode": 401
+  },
+  "AUTH_ACCOUNT_EXIST": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "The account is already exist."
+    },
+    "statusCode": 403
+  },
+  "AUTH_ACCOUNT_BLOCKED": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "The account is blocked."
+    },
+    "statusCode": 401
+  },
+  "AUTH_LOGIN_CREDENTIALS_MISSING": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "Login credentials are missing."
+    },
+    "statusCode": 400
+  },
+  "LANGUAGE": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "Either you did not send a language identifier to a multilingual field or you have sent an identifier which is not available."
+    },
+    "statusCode": 400
+  },
+  "LANGUAGE_SAFE": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "In order to make schema multilingual, you must place your languages to language safe."
+    }
+  },
+  "DB_INVALID_SCHEMA": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "Invalid schema definition."
+    }
+  },
+  "SCHEMA_CUSTOM_INVALID_CONTROLLER_OP": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "In $0.$1, you defined an invalid controller operation $2."
+    }
+  },
+  "SCHEMA_CUSTOM_INVALID_CONTROLLER_OP_VALUE": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "In $0.$1, for controller operation $2, you set an invalid value $3."
+    }
+  }
+}
