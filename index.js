@@ -1,4 +1,4 @@
-const {Error} = require("@thedolphinos/utility4js"); // this is imported from utility4js instead of utility4js due to node's duplicate module imports which causes reference problems during instanceof checks.
+const {Error} = require("@thedolphinos/error4js"); // this is imported due to node's duplicate module imports which causes reference problems during instanceof checks.
 
 const Cell = require("./lib/core/Cell");
 const Logger = require("./lib/core/Logger");
@@ -20,9 +20,14 @@ const AuthController = require("./lib/controllers/AuthController");
 const CrudController = require("./lib/controllers/CrudController");
 
 const RouteHelper = require("./lib/helpers/RouteHelper");
+const ERROR_DATA = require("./lib/helpers/ERROR_DATA.json");
 
 module.exports = {
   Error,
+  ErrorData: {
+    ...Error.DATA,
+    ...ERROR_DATA
+  },
 
   Cell,
   Logger,
