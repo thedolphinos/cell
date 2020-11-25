@@ -1,4 +1,4 @@
-const {Error} = require("@thedolphinos/error4js"); // this is imported due to node's duplicate module imports which causes reference problems during instanceof checks.
+const Error = require("@thedolphinos/error4js"); // this is imported due to node's duplicate module imports which causes reference problems during instanceof checks.
 
 const Cell = require("./lib/core/Cell");
 const Logger = require("./lib/core/Logger");
