@@ -71,5 +71,19 @@
     "message": {
       "en": "In $0.$1, for controller operation $2, you set an invalid value $3."
     }
+  },
+  "INVALID_BODY": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "Invalid body."
+    },
+    "statusCode": 400
+  },
+  "RESOURCE_NOT_FOUND": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "Resource is not found."
+    },
+    "statusCode": 400
   }
 }
