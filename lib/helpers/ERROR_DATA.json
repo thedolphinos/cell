@@ -2,87 +2,100 @@
   "DOCUMENT_INVALID_VERSION": {
     "code": "ERR_UNK",
     "message": {
-      "en": "The requested documents latest version is $0. You have the version $1."
+      "en": "The requested documents latest version is $0. You have the version $1.",
+      "tr": "İstenen belgenin en son sürümü $0. Siz $1 sürümüne sahipsiniz."
     },
     "statusCode": 400
   },
   "DOCUMENT_MODIFIED": {
     "code": "ERR_UNK",
     "message": {
-      "en": "The requested document has been modified. The latest version is $0. You have the version $1."
+      "en": "The requested document has been modified. The latest version is $0. You have the version $1.",
+      "tr": "İstenen belge değiştirildi. En son sürüm $0. Siz $1 sürümüne sahipsiniz."
     },
     "statusCode": 400
   },
   "AUTH_DATA_MISSING": {
     "code": "ERR_UNK",
     "message": {
-      "en": "Authorization data is missing."
+      "en": "Authorization data is missing.",
+      "tr": "Yetkilendirme verisi eksik."
     },
     "statusCode": 401
   },
   "AUTH_ACCOUNT_EXIST": {
     "code": "ERR_UNK",
     "message": {
-      "en": "The account is already exist."
+      "en": "The account is already exist.",
+      "tr": "Hesap zaten mevcut."
     },
     "statusCode": 403
   },
   "AUTH_ACCOUNT_BLOCKED": {
     "code": "ERR_UNK",
     "message": {
-      "en": "The account is blocked."
+      "en": "The account is blocked.",
+      "tr": "Hesap bloke edildi."
     },
     "statusCode": 401
   },
   "AUTH_LOGIN_CREDENTIALS_MISSING": {
     "code": "ERR_UNK",
     "message": {
-      "en": "Login credentials are missing."
+      "en": "Login credentials are missing.",
+      "tr": "Giriş bilgileri eksik."
     },
     "statusCode": 400
   },
   "LANGUAGE": {
     "code": "ERR_UNK",
     "message": {
-      "en": "Either you did not send a language identifier to a multilingual field or you have sent an identifier which is not available."
+      "en": "Either you did not send a language identifier to a multilingual field or you have sent an identifier which is not available.",
+      "tr": "Ya çok dilli bir alana bir dil tanımlayıcı göndermediniz ya da mevcut olmayan bir tanımlayıcı gönderdiniz."
     },
     "statusCode": 400
   },
   "LANGUAGE_SAFE": {
     "code": "ERR_UNK",
     "message": {
-      "en": "In order to make schema multilingual, you must place your languages to language safe."
+      "en": "In order to make schema multilingual, you must place your languages to language safe.",
+      "tr": "Şemayı çok dilli yapmak için, dillerinizi dil kasasına yerleştirmelisiniz."
     }
   },
   "DB_INVALID_SCHEMA": {
     "code": "ERR_UNK",
     "message": {
-      "en": "Invalid schema definition."
+      "en": "Invalid schema definition.",
+      "tr": "Geçersiz şema tanımı."
     }
   },
   "SCHEMA_CUSTOM_INVALID_CONTROLLER_OP": {
     "code": "ERR_UNK",
     "message": {
-      "en": "In $0.$1, you defined an invalid controller operation $2."
+      "en": "In $0.$1, you defined an invalid controller operation $2.",
+      "tr": "$0.$1 da, geçersiz controller operation $2 yi tanımladınız."
     }
   },
   "SCHEMA_CUSTOM_INVALID_CONTROLLER_OP_VALUE": {
     "code": "ERR_UNK",
     "message": {
-      "en": "In $0.$1, for controller operation $2, you set an invalid value $3."
+      "en": "In $0.$1, for controller operation $2, you set an invalid value $3.",
+      "tr": "$0.$1 da, controller operation $2 için, geçersiz bir değer olan $3 ü tanımladınız."
     }
   },
   "INVALID_BODY": {
     "code": "ERR_UNK",
     "message": {
-      "en": "Invalid body."
+      "en": "Invalid body.",
+      "tr": "Geçersiz body."
     },
     "statusCode": 400
   },
   "RESOURCE_NOT_FOUND": {
     "code": "ERR_UNK",
     "message": {
-      "en": "Resource is not found."
+      "en": "Resource is not found.",
+      "tr": "Kaynak bulunamadı."
     },
     "statusCode": 400
   }
