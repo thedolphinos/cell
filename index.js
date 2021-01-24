@@ -3,6 +3,7 @@ const Error = require("@thedolphinos/error4js"); // this is imported due to node
 const Cell = require("./lib/core/Cell");
 const Logger = require("./lib/core/Logger");
 const Validator = require("./lib/core/Validator");
+const Injector = require("./lib/core/Injector");
 
 const DbSafe = require("./lib/safes/DbSafe");
 const LanguageSafe = require("./lib/safes/LanguageSafe");
@@ -22,6 +23,8 @@ const CrudController = require("./lib/controllers/CrudController");
 const RouteHelper = require("./lib/helpers/RouteHelper");
 const ERROR_DATA = require("./lib/helpers/ERROR_DATA.json");
 
+Injector.build("./lib/db");
+
 module.exports = {
   Error,
   ErrorData: {
@@ -32,6 +35,7 @@ module.exports = {
   Cell,
   Logger,
   Validator,
+  Injector,
 
   DbSafe,
   LanguageSafe,
