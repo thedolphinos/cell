@@ -23,8 +23,6 @@ const CrudController = require("./lib/controllers/CrudController");
 const RouteHelper = require("./lib/helpers/RouteHelper");
 const ERROR_DATA = require("./lib/helpers/ERROR_DATA.json");
 
-Injector.build("./lib/db");
-
 module.exports = {
   Error,
   ErrorData: {
