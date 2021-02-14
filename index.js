@@ -22,14 +22,9 @@ const AuthController = require("./lib/controllers/AuthController");
 const CrudController = require("./lib/controllers/CrudController");
 
 const RouteHelper = require("./lib/helpers/RouteHelper");
-const ERROR_DATA = require("./lib/helpers/ERROR_DATA.json");
 
 module.exports = {
   Error,
-  ErrorData: {
-    ...Error.DATA,
-    ...ERROR_DATA
-  },
 
   Cell,
   Logger,
