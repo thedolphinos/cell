@@ -5,7 +5,6 @@ const Logger = require("./lib/core/Logger");
 const Safe = require("./lib/core/Safe");
 const DbSafe = require("./lib/safes/DbSafe");
 const LanguageSafe = require("./lib/safes/LanguageSafe");
-const Validator = require("./lib/core/Validator");
 const Injector = require("./lib/core/Injector");
 
 const Schema = require("./lib/db/Schema");
@@ -28,7 +27,6 @@ module.exports = {
   Safe,
   DbSafe,
   LanguageSafe,
-  Validator,
   Injector,
 
   Schema,
