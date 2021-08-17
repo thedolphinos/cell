@@ -58,6 +58,28 @@ const {
   DATA
 } = require("@thedolphinos/error4js");
 const utility = require("@thedolphinos/utility4js");
+const {
+  Error,
+
+  Cell,
+  Logger,
+  Safe,
+  DbSafe,
+  LanguageSafe,
+  Injector,
+
+  Schema,
+  DbOperation,
+  SessionManager,
+  DbService,
+  ApplicationService,
+  ControllerService,
+
+  Controller,
+  AuthController,
+  CrudController,
+  RouteHelper
+} = require("@thedolphinos/cell");
 
 ## 3rd Party Modules
 
