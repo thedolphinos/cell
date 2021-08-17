@@ -2,8 +2,9 @@
 
 There are 4 categories of modules which are Node.js modules, dolphinOS modules, 3rd party modules, and own modules.
 
-While requiring modules, an empty line should be inserted between the modules.
-In addition, under each category the order below should be followed.
+Import order of categories and modules should be as followed.
+An empty line should be inserted between the categories.
+In selective imports, if more than 1 module is imported, modules should be on separate lines.
 
 ## Node.js Modules
 
@@ -52,7 +53,9 @@ const {
   InvalidTokenError,
 
   AccountBlockedError,
-  TokenExpiredError
+  TokenExpiredError,
+
+  DATA
 } = require("@thedolphinos/error4js");
 const utility = require("@thedolphinos/utility4js");
 

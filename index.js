@@ -2,17 +2,15 @@ const Error = require("@thedolphinos/error4js"); // this is imported due to node
 
 const Cell = require("./lib/core/Cell");
 const Logger = require("./lib/core/Logger");
-const Validator = require("./lib/core/Validator");
-const Injector = require("./lib/core/Injector");
 const Safe = require("./lib/core/Safe");
-
 const DbSafe = require("./lib/safes/DbSafe");
 const LanguageSafe = require("./lib/safes/LanguageSafe");
+const Validator = require("./lib/core/Validator");
+const Injector = require("./lib/core/Injector");
 
-const SessionManager = require("./lib/db/SessionManager");
 const Schema = require("./lib/db/Schema");
 const DbOperation = require("./lib/db/DbOperation");
-
+const SessionManager = require("./lib/db/SessionManager");
 const DbService = require("./lib/services/DbService");
 const ApplicationService = require("./lib/services/ApplicationService");
 const ControllerService = require("./lib/services/ControllerService");
@@ -20,7 +18,6 @@ const ControllerService = require("./lib/services/ControllerService");
 const Controller = require("./lib/core/Controller");
 const AuthController = require("./lib/controllers/AuthController");
 const CrudController = require("./lib/controllers/CrudController");
-
 const RouteHelper = require("./lib/helpers/RouteHelper");
 
 module.exports = {
@@ -28,17 +25,15 @@ module.exports = {
 
   Cell,
   Logger,
-  Validator,
-  Injector,
   Safe,
-
   DbSafe,
   LanguageSafe,
+  Validator,
+  Injector,
 
-  SessionManager,
   Schema,
   DbOperation,
-
+  SessionManager,
   DbService,
   ApplicationService,
   ControllerService,
@@ -46,6 +41,5 @@ module.exports = {
   Controller,
   AuthController,
   CrudController,
-
   RouteHelper
 };
