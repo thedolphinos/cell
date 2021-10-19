@@ -4,7 +4,7 @@ A framework to build server side applications using MongoDB, Node.js and Express
 
 # 1. [Cell](https://github.com/thedolphinos/cell/blob/master/lib/core/Cell.js)
 
-Cell is the initiation point of the framework. You can start the application by calling the method `createLife` with the argument `config`.
+The initiation point of the framework. You can start the application by calling the method `createLife` with the parameter `config`.
 
 ## 1.1. Flow of the method `createLife`
 

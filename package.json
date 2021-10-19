@@ -1,12 +1,14 @@
 {
   "name": "@thedolphinos/cell",
-  "version": "0.143.0",
-  "description": "A framework for Node.js to build server side applications.",
+  "version": "0.144.0",
+  "description": "A framework to build server side applications using MongoDB, Node.js and Express.",
   "keywords": [
     "dolphinos",
     "framework",
-    "server",
-    "server side"
+    "server side",
+    "mongodb",
+    "nodejs",
+    "express"
   ],
   "homepage": "https://github.com/thedolphinos/cell",
   "bugs": {
