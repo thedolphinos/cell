@@ -2,6 +2,8 @@
 
 A framework to build server side applications using MongoDB, Node.js and Express.
 
+👾: Before the release of version 1.0.0, we decided to review Cell from scratch. You can follow [the progress](https://github.com/thedolphinos/cell/blob/master/docs/ReviewProgress.txt), if you would like to.
+
 # 1. [Cell](https://github.com/thedolphinos/cell/blob/master/lib/core/Cell.js)
 
 The initiation point of the framework. You can start the application by calling the method `createLife` with the parameter `config`.

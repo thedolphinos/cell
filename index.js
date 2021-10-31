@@ -17,7 +17,7 @@ const ControllerService = require("./lib/services/ControllerService");
 const Controller = require("./lib/core/Controller");
 const AuthController = require("./lib/controllers/AuthController");
 const CrudController = require("./lib/controllers/CrudController");
-const RouteHelper = require("./lib/helpers/RouteHelper");
+const Router = require("./lib/core/Router");
 
 module.exports = {
   Error,
@@ -39,5 +39,5 @@ module.exports = {
   Controller,
   AuthController,
   CrudController,
-  RouteHelper
+  Router
 };

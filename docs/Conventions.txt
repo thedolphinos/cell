@@ -2,9 +2,9 @@
 
 There are 4 categories of modules which are Node.js modules, dolphinOS modules, 3rd party modules, and own modules.
 
-Import order of categories and modules should be as followed.
-An empty line should be inserted between the categories.
-In selective imports, if more than 1 module is imported, modules should be on separate lines.
+Import order of categories and modules must be as followed.
+- An empty line must be inserted between the categories.
+- In selective imports, if more than 1 module is imported, modules must be on separate lines.
 
 ## Node.js Modules
 
@@ -78,7 +78,7 @@ const {
   Controller,
   AuthController,
   CrudController,
-  RouteHelper
+  Router
 } = require("@thedolphinos/cell");
 
 ## 3rd Party Modules
@@ -125,5 +125,30 @@ ControllerService
 Controller
 AuthController
 CrudController
-RouteHelper
+Router
 ERROR_DATA
+
+# Structure Conventions
+
+Every class, constructor, method, variable must be documented.
+
+Definition order of class members must be as followed. (`x > y` means `x` has higher precedence over `y`.)
+- constructor
+- instance methods
+- static methods
+  - validate parameters
+    - _isValidParameterX
+    - _validateParameterX
+- instance variables
+- static variables
+- public members > protected members > private members
+
+# Comment Conventions
+
+Classes and all class members must be commented. Use order of comment tags must be as followed.
+- @param
+- @return
+- @type
+- @enum
+- @public/@protected/@private
+- @static
