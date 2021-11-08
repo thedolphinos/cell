@@ -25,9 +25,11 @@ DbService         :  ----         ----    ----  ----  ----
 ApplicationService:  ----         ----    ----  ----  ----
 ControllerService :  ----         ----    ----  ----  ----
 
-Controller        :  ----         ----    ----  ----  ----
+Controller        :  true         ----    true  ----  ----
 AuthController    :  ----         ----    ----  ----  ----
-CrudController    :  ----         ----    ----  ----  ----
+CrudController    :  true         ----    true  ----  ----
 Router            :  true         ----    true  ----  ----
+
+Validator         :  true         ----    true  ----  ----
 ERROR_DATA        :  ----         ----    ----  ----  ----
 -------------------
