@@ -20,69 +20,6 @@ const AuthController = require("./lib/controllers/AuthController");
 const CrudController = require("./lib/controllers/CrudController");
 const Router = require("./lib/core/Router");
 
-console.log(
-  Validator.isValidParameterRoutesDefinitions(
-    {
-      READ: {
-        isEnabled: true,
-        allowedPropertiesForRequestElements: {
-          body: {
-            required: ["query"]
-          }
-        }
-      },
-      READ_ONE_BY_ID: {
-        isEnabled: true,
-        allowedPropertiesForRequestElements: {
-          body: {
-            required: ["_id"]
-          }
-        }
-      },
-      CREATE_ONE: {
-        isEnabled: true,
-        allowedPropertiesForRequestElements: {
-          body: {
-            required: ["fields"]
-          }
-        }
-      },
-      UPDATE_ONE_BY_ID_AND_VERSION: {
-        isEnabled: true,
-        allowedPropertiesForRequestElements: {
-          body: {
-            required: ["_id", "version", "fields"]
-          }
-        }
-      },
-      REPLACE_ONE_BY_ID_AND_VERSION: {
-        isEnabled: true,
-        allowedPropertiesForRequestElements: {
-          body: {
-            required: ["_id", "version", "fields"]
-          }
-        }
-      },
-      SOFT_DELETE_ONE_BY_ID_AND_VERSION: {
-        isEnabled: true,
-        allowedPropertiesForRequestElements: {
-          body: {
-            required: ["_id", "version"]
-          }
-        }
-      },
-      DELETE_ONE_BY_ID_AND_VERSION: {
-        isEnabled: true,
-        allowedPropertiesForRequestElements: {
-          body: {
-            required: ["_id", "version"]
-          }
-        }
-      }
-    }
-  )
-);
-
 module.exports = {
   Error,
 
