@@ -1,0 +1,9 @@
+{
+  "Boolean": "Boolean",
+  "Integer": "Integer",
+  "Float": "Float",
+  "String": "String",
+  "ObjectId": "ObjectId",
+  "Date": "Date",
+  "Any": "Any"
+}

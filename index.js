@@ -8,6 +8,7 @@ const DbSafe = require("./lib/safes/DbSafe");
 const LanguageSafe = require("./lib/safes/LanguageSafe");
 const Injector = require("./lib/core/Injector");
 
+const BsonType = require("./lib/db/BsonType");
 const Schema = require("./lib/db/Schema");
 const DbOperation = require("./lib/db/DbOperation");
 const SessionManager = require("./lib/db/SessionManager");
@@ -15,6 +16,7 @@ const DbService = require("./lib/services/DbService");
 const ApplicationService = require("./lib/services/ApplicationService");
 const ControllerService = require("./lib/services/ControllerService");
 
+const DataType = require("./lib/core/DataType.json");
 const Controller = require("./lib/core/Controller");
 const AuthController = require("./lib/controllers/AuthController");
 const CrudController = require("./lib/controllers/CrudController");
@@ -30,6 +32,7 @@ module.exports = {
   LanguageSafe,
   Injector,
 
+  BsonType,
   Schema,
   DbOperation,
   SessionManager,
@@ -37,6 +40,7 @@ module.exports = {
   ApplicationService,
   ControllerService,
 
+  DataType,
   Controller,
   AuthController,
   CrudController,

@@ -16,7 +16,7 @@ Server            :  ----         ----    ----  ----  ----
 DbConnection      :  ----         ----    ----  ----  ----
 Injector          :  ----         ----    ----  ----  ----
 
-DataType          :  ----         ----    ----  ----  ----
+BsonType          :  ----         ----    ----  ----  ----
 Schema            :  ----         ----    ----  ----  ----
 DbOperation       :  ----         ----    ----  ----  ----
 SessionManager    :  ----         ----    ----  ----  ----
@@ -25,6 +25,7 @@ DbService         :  ----         ----    ----  ----  ----
 ApplicationService:  ----         ----    ----  ----  ----
 ControllerService :  ----         ----    ----  ----  ----
 
+DataType          :  ----         ----    ----  ----  ----
 Controller        :  true         ----    true  ----  ----
 AuthController    :  ----         ----    ----  ----  ----
 CrudController    :  true         ----    true  ----  ----

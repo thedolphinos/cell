@@ -51,12 +51,14 @@
             - DbSafe
             - LanguageSafe
             - Injector
+            - BsonType
             - Schema
             - DbOperation
             - SessionManager
             - DbService
             - ApplicationService
             - ControllerService
+            - DataType
             - Controller
             - AuthController
             - CrudController
@@ -89,7 +91,7 @@
         - Server
         - DbConnection
         - Injector
-        - DataType
+        - BsonType
         - Schema
         - DbOperation
         - SessionManager
@@ -97,11 +99,7 @@
         - DbService
         - ApplicationService
         - ControllerService
-        - SessionManager
-        - Service
-        - DbService
-        - ApplicationService
-        - ControllerService
+        - DataType
         - Controller
         - AuthController
         - CrudController
