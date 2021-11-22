@@ -27,7 +27,7 @@ ControllerService :  ----         ----    ----  ----  ----
 
 DataType          :  ----         ----    ----  ----  ----
 Controller        :  true         ----    true  ----  ----
-AuthController    :  ----         ----    ----  ----  ----
+AuthController    :  true         ----    true  ----  ----
 CrudController    :  true         ----    true  ----  ----
 Router            :  true         ----    true  ----  ----
 

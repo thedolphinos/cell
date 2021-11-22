@@ -15,38 +15,6 @@
     },
     "statusCode": 400
   },
-  "AUTH_DATA_MISSING": {
-    "code": "ERR_UNK",
-    "message": {
-      "en": "Authorization data is missing.",
-      "tr": "Yetkilendirme verisi eksik."
-    },
-    "statusCode": 401
-  },
-  "AUTH_ACCOUNT_EXIST": {
-    "code": "ERR_UNK",
-    "message": {
-      "en": "The account is already exist.",
-      "tr": "Hesap zaten mevcut."
-    },
-    "statusCode": 403
-  },
-  "AUTH_ACCOUNT_BLOCKED": {
-    "code": "ERR_UNK",
-    "message": {
-      "en": "The account is blocked.",
-      "tr": "Hesap bloke edildi."
-    },
-    "statusCode": 401
-  },
-  "AUTH_LOGIN_CREDENTIALS_MISSING": {
-    "code": "ERR_UNK",
-    "message": {
-      "en": "Login credentials are missing.",
-      "tr": "Giriş bilgileri eksik."
-    },
-    "statusCode": 400
-  },
   "LANGUAGE": {
     "code": "ERR_UNK",
     "message": {
@@ -69,20 +37,6 @@
       "tr": "Geçersiz şema tanımı."
     }
   },
-  "SCHEMA_CUSTOM_INVALID_CONTROLLER_OP": {
-    "code": "ERR_UNK",
-    "message": {
-      "en": "In $0.$1, you defined an invalid controller operation $2.",
-      "tr": "$0.$1 da, geçersiz controller operation $2 yi tanımladınız."
-    }
-  },
-  "SCHEMA_CUSTOM_INVALID_CONTROLLER_OP_VALUE": {
-    "code": "ERR_UNK",
-    "message": {
-      "en": "In $0.$1, for controller operation $2, you set an invalid value $3.",
-      "tr": "$0.$1 da, controller operation $2 için, geçersiz bir değer olan $3 ü tanımladınız."
-    }
-  },
   "INVALID_BODY": {
     "code": "ERR_UNK",
     "message": {
@@ -98,5 +52,37 @@
       "tr": "Kaynak bulunamadı."
     },
     "statusCode": 400
+  },
+  "AUTHORIZATION_HEADER_MISSING": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "Authorization header is missing.",
+      "tr": "Yetkilendirme header ı eksik."
+    },
+    "statusCode": 401
+  },
+  "ACCOUNT_INACTIVE": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "The account is not activated.",
+      "tr": "Hesap henüz aktive edilmemiş."
+    },
+    "statusCode": 403
+  },
+  "ACCOUNT_BLOCKED": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "The account is blocked.",
+      "tr": "Hesap bloke edildi."
+    },
+    "statusCode": 403
+  },
+  "ACCOUNT_ALREADY_EXIST": {
+    "code": "ERR_UNK",
+    "message": {
+      "en": "The account with the given information is already exist.",
+      "tr": "Girilen bilgilerle bir hesap zaten mevcut."
+    },
+    "statusCode": 403
   }
 }
