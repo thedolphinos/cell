@@ -10,6 +10,7 @@
         - fs
         - http
         - https
+        - crypto
     - dolphinOS Modules
         - error4js
             - BaseError
