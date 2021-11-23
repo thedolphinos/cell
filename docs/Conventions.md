@@ -10,6 +10,7 @@
         - fs
         - http
         - https
+        - util
         - crypto
     - dolphinOS Modules
         - error4js
@@ -78,7 +79,11 @@
         - express
         - bcrypt
         - jsonwebtoken as jwt
+        - aws-sdk as AWS
         - mongo-dot-notation as mongoDotNotation
+        - mimemessage
+        - validator
+        - node-email-validator as emailValidator
     - Own Modules
         - Cell
         - Logger
