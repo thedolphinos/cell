@@ -53,6 +53,14 @@
     },
     "statusCode": 400
   },
+  "INVALID_SEARCH_VALUE": {
+    "code": "INVALID_SEARCH_VALUE",
+    "message": {
+      "en": "Invalid search value.",
+      "tr": "Geçersiz arama değeri."
+    },
+    "statusCode": 400
+  },
   "AUTHORIZATION_HEADER_MISSING": {
     "code": "ERR_UNK",
     "message": {
