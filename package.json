@@ -1,6 +1,6 @@
 {
   "name": "@thedolphinos/cell",
-  "version": "0.166.2",
+  "version": "0.166.3",
   "description": "A framework to build server side applications using MongoDB, Node.js and Express.",
   "keywords": [
     "dolphinos",
