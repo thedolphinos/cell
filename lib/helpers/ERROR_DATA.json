@@ -61,6 +61,14 @@
     },
     "statusCode": 400
   },
+  "PASSWORD_WRONG": {
+    "code": "PASSWORD_WRONG",
+    "message": {
+      "en": "You entered your password incorrectly.",
+      "tr": "Şifrenizi yanlış girdiniz."
+    },
+    "statusCode": 400
+  },
   "PASSWORD_UNCHANGED": {
     "code": "PASSWORD_UNCHANGED",
     "message": {
