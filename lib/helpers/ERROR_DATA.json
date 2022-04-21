@@ -69,21 +69,13 @@
     },
     "statusCode": 400
   },
-  "PASSWORD_UNCHANGED": {
-    "code": "PASSWORD_UNCHANGED",
-    "message": {
-      "en": "The new password must be different than the old password.",
-      "tr": "Yeni şifre eski şifreden farklı olmalıdır."
-    },
-    "statusCode": 400
-  },
   "AUTHORIZATION_HEADER_MISSING": {
     "code": "ERR_UNK",
     "message": {
       "en": "Authorization header is missing.",
       "tr": "Yetkilendirme header ı eksik."
     },
-    "statusCode": 401
+    "statusCode": 400
   },
   "ACTIVATION_LINK_MALFORMED": {
     "code": "ACTIVATION_LINK_MALFORMED",
@@ -91,7 +83,7 @@
       "en": "Your activation link is somehow broken. Please contact us.",
       "tr": "Aktivasyon linkin bir şekilde bozulmuş. Lütfen bizimle iletişime geç."
     },
-    "statusCode": 401
+    "statusCode": 400
   },
   "ACTIVATION_LINK_EXPIRED": {
     "code": "ACTIVATION_LINK_EXPIRED",
@@ -99,7 +91,7 @@
       "en": "Your activation link was valid for 1 hour for your safety and has expired. You can request a new one.",
       "tr": "Aktivasyon linkin senin güvenliğin için 1 saat süreyle geçerliydi ve süresi dolmuş. Yenisini talep edebilirsin."
     },
-    "statusCode": 401
+    "statusCode": 400
   },
   "ACTIVATION_CODE_INVALID": {
     "code": "ACTIVATION_CODE_INVALID",
@@ -107,7 +99,15 @@
       "en": "You entered an invalid activation code.",
       "tr": "Geçersiz bir aktivasyon kodu girdin."
     },
-    "statusCode": 401
+    "statusCode": 400
+  },
+  "PASSWORD_UNCHANGED": {
+    "code": "PASSWORD_UNCHANGED",
+    "message": {
+      "en": "The new password must be different than the old password.",
+      "tr": "Yeni şifre eski şifreden farklı olmalıdır."
+    },
+    "statusCode": 400
   },
   "ACCOUNT_INACTIVE": {
     "code": "ERR_UNK",
