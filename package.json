@@ -1,6 +1,6 @@
 {
   "name": "@thedolphinos/cell",
-  "version": "0.185.0",
+  "version": "0.185.1",
   "description": "A framework to build server side applications using MongoDB, Node.js and Express.",
   "keywords": [
     "dolphinos",
@@ -43,7 +43,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "helmet": "^6.0.0",
-    "nodemon": "^2.0.19",
-    "require-self": "^0.2.3"
+    "nodemon": "^2.0.19"
   }
 }
