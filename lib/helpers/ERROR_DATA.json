@@ -1,6 +1,6 @@
 {
   "DOCUMENT_INVALID_VERSION": {
-    "code": "ERR_UNK",
+    "code": "DOCUMENT_INVALID_VERSION",
     "message": {
       "en": "The requested documents latest version is $0. You have the version $1.",
       "tr": "İstenen belgenin en son sürümü $0. Siz $1 sürümüne sahipsiniz."
@@ -8,7 +8,7 @@
     "statusCode": 400
   },
   "DOCUMENT_MODIFIED": {
-    "code": "ERR_UNK",
+    "code": "DOCUMENT_MODIFIED",
     "message": {
       "en": "The requested document has been modified. The latest version is $0. You have the version $1.",
       "tr": "İstenen belge değiştirildi. En son sürüm $0. Siz $1 sürümüne sahipsiniz."
@@ -16,7 +16,7 @@
     "statusCode": 400
   },
   "LANGUAGE": {
-    "code": "ERR_UNK",
+    "code": "LANGUAGE",
     "message": {
       "en": "Either you did not send a language identifier to a multilingual field or you have sent an identifier which is not available.",
       "tr": "Ya çok dilli bir alana bir dil tanımlayıcı göndermediniz ya da mevcut olmayan bir tanımlayıcı gönderdiniz."
@@ -24,21 +24,21 @@
     "statusCode": 400
   },
   "LANGUAGE_SAFE": {
-    "code": "ERR_UNK",
+    "code": "LANGUAGE_SAFE",
     "message": {
       "en": "In order to make schema multilingual, you must place your languages to language safe.",
       "tr": "Şemayı çok dilli yapmak için, dillerinizi dil kasasına yerleştirmelisiniz."
     }
   },
   "DB_INVALID_SCHEMA": {
-    "code": "ERR_UNK",
+    "code": "DB_INVALID_SCHEMA",
     "message": {
       "en": "Invalid schema definition.",
       "tr": "Geçersiz şema tanımı."
     }
   },
   "INVALID_BODY": {
-    "code": "ERR_UNK",
+    "code": "INVALID_BODY",
     "message": {
       "en": "Invalid body.",
       "tr": "Geçersiz body."
@@ -46,7 +46,7 @@
     "statusCode": 400
   },
   "RESOURCE_NOT_FOUND": {
-    "code": "ERR_UNK",
+    "code": "RESOURCE_NOT_FOUND",
     "message": {
       "en": "Resource is not found.",
       "tr": "Kaynak bulunamadı."
@@ -70,7 +70,7 @@
     "statusCode": 400
   },
   "AUTHORIZATION_HEADER_MISSING": {
-    "code": "ERR_UNK",
+    "code": "AUTHORIZATION_HEADER_MISSING",
     "message": {
       "en": "Authorization header is missing.",
       "tr": "Yetkilendirme header ı eksik."
@@ -110,7 +110,7 @@
     "statusCode": 400
   },
   "ACCOUNT_INACTIVE": {
-    "code": "ERR_UNK",
+    "code": "ACCOUNT_INACTIVE",
     "message": {
       "en": "The account is not activated.",
       "tr": "Hesap henüz aktive edilmemiş."
@@ -118,7 +118,7 @@
     "statusCode": 403
   },
   "ACCOUNT_BLOCKED": {
-    "code": "ERR_UNK",
+    "code": "ACCOUNT_BLOCKED",
     "message": {
       "en": "The account is blocked.",
       "tr": "Hesap bloke edildi."
@@ -126,7 +126,7 @@
     "statusCode": 403
   },
   "ACCOUNT_ALREADY_EXIST": {
-    "code": "ERR_UNK",
+    "code": "ACCOUNT_ALREADY_EXIST",
     "message": {
       "en": "The account with the given information is already exist.",
       "tr": "Girilen bilgilerle bir hesap zaten mevcut."
