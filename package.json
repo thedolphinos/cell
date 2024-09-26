@@ -1,41 +1,41 @@
 {
-  "name": "@thedolphinos/cell",
-  "version": "0.187.1",
-  "description": "A framework to build server side applications using MongoDB, Node.js and Express.",
-  "keywords": [
-    "dolphinos",
-    "framework",
-    "server side",
-    "mongodb",
-    "nodejs",
-    "express"
-  ],
-  "homepage": "https://github.com/thedolphinos/cell",
-  "bugs": {
-    "url": "https://github.com/thedolphinos/cell/issues",
-    "email": "project@dolphinos.com"
-  },
-  "license": "MIT",
-  "contributors": [
-    "Onur Çipe <onur@dolphinos.com>",
-    "Selma Çipe <selma@dolphinos.com>"
-  ],
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/thedolphinos/cell.git"
-  },
-  "scripts": {},
-  "dependencies": {
-    "@thedolphinos/error4js": "^0.29.0",
-    "@thedolphinos/utility4js": "^0.25.1",
-    "bcrypt": "^5.0.1",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.21",
-    "mongo-dot-notation": "^3.1.0",
-    "mongodb": "^4.11.0",
-    "node-rsa": "^1.1.1"
-  },
-  "devDependencies": {}
+    "name": "@thedolphinos/cell",
+    "version": "0.188.0",
+    "description": "A framework to build server side applications using Node.js, Express, and MongoDB.",
+    "keywords": [
+        "dolphinos",
+        "framework",
+        "server side",
+        "mongodb",
+        "nodejs",
+        "express"
+    ],
+    "homepage": "https://github.com/thedolphinos/cell",
+    "bugs": {
+        "url": "https://github.com/thedolphinos/cell/issues",
+        "email": "project@dolphinos.com"
+    },
+    "license": "MIT",
+    "contributors": [
+        "Onur Cipe <onur@dolphinos.com>",
+        "Selma Cipe <selma@dolphinos.com>"
+    ],
+    "main": "indexn.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/thedolphinos/cell.git"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@thedolphinos/error4js": "^0",
+        "@thedolphinos/utility4js": "^0",
+        "bcrypt": "^5",
+        "express": "^4",
+        "jsonwebtoken": "^9",
+        "lodash": "^4",
+        "mongo-dot-notation": "^3",
+        "mongodb": "^6",
+        "node-rsa": "^1"
+    },
+    "devDependencies": {}
 }

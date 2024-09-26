@@ -1,0 +1,136 @@
+{
+    "DOCUMENT_INVALID_VERSION": {
+        "code": "DOCUMENT_INVALID_VERSION",
+        "message": {
+            "en": "The requested documents latest version is $0. You have the version $1.",
+            "tr": "İstenen belgenin en son sürümü $0. Siz $1 sürümüne sahipsiniz."
+        },
+        "statusCode": 400
+    },
+    "DOCUMENT_MODIFIED": {
+        "code": "DOCUMENT_MODIFIED",
+        "message": {
+            "en": "The requested document has been modified. The latest version is $0. You have the version $1.",
+            "tr": "İstenen belge değiştirildi. En son sürüm $0. Siz $1 sürümüne sahipsiniz."
+        },
+        "statusCode": 400
+    },
+    "LANGUAGE": {
+        "code": "LANGUAGE",
+        "message": {
+            "en": "Either you did not send a language identifier to a multilingual field or you have sent an identifier which is not available.",
+            "tr": "Ya çok dilli bir alana bir dil tanımlayıcı göndermediniz ya da mevcut olmayan bir tanımlayıcı gönderdiniz."
+        },
+        "statusCode": 400
+    },
+    "LANGUAGE_SAFE": {
+        "code": "LANGUAGE_SAFE",
+        "message": {
+            "en": "In order to make schema multilingual, you must place your languages to language safe.",
+            "tr": "Şemayı çok dilli yapmak için, dillerinizi dil kasasına yerleştirmelisiniz."
+        }
+    },
+    "DB_INVALID_SCHEMA": {
+        "code": "DB_INVALID_SCHEMA",
+        "message": {
+            "en": "Invalid schema definition.",
+            "tr": "Geçersiz şema tanımı."
+        }
+    },
+    "INVALID_BODY": {
+        "code": "INVALID_BODY",
+        "message": {
+            "en": "Invalid body.",
+            "tr": "Geçersiz body."
+        },
+        "statusCode": 400
+    },
+    "RESOURCE_NOT_FOUND": {
+        "code": "RESOURCE_NOT_FOUND",
+        "message": {
+            "en": "Resource is not found.",
+            "tr": "Kaynak bulunamadı."
+        },
+        "statusCode": 400
+    },
+    "INVALID_SEARCH_VALUE": {
+        "code": "INVALID_SEARCH_VALUE",
+        "message": {
+            "en": "Invalid search value.",
+            "tr": "Geçersiz arama değeri."
+        },
+        "statusCode": 400
+    },
+    "PASSWORD_WRONG": {
+        "code": "PASSWORD_WRONG",
+        "message": {
+            "en": "You entered your password incorrectly.",
+            "tr": "Şifrenizi yanlış girdiniz."
+        },
+        "statusCode": 400
+    },
+    "AUTHORIZATION_HEADER_MISSING": {
+        "code": "AUTHORIZATION_HEADER_MISSING",
+        "message": {
+            "en": "Authorization header is missing.",
+            "tr": "Yetkilendirme header ı eksik."
+        },
+        "statusCode": 400
+    },
+    "ACTIVATION_LINK_MALFORMED": {
+        "code": "ACTIVATION_LINK_MALFORMED",
+        "message": {
+            "en": "Your activation link is somehow broken. Please contact us.",
+            "tr": "Aktivasyon linkin bir şekilde bozulmuş. Lütfen bizimle iletişime geç."
+        },
+        "statusCode": 400
+    },
+    "ACTIVATION_LINK_EXPIRED": {
+        "code": "ACTIVATION_LINK_EXPIRED",
+        "message": {
+            "en": "Your activation link was valid for 1 hour for your safety and has expired. You can request a new one.",
+            "tr": "Aktivasyon linkin senin güvenliğin için 1 saat süreyle geçerliydi ve süresi dolmuş. Yenisini talep edebilirsin."
+        },
+        "statusCode": 400
+    },
+    "ACTIVATION_CODE_INVALID": {
+        "code": "ACTIVATION_CODE_INVALID",
+        "message": {
+            "en": "You entered an invalid activation code.",
+            "tr": "Geçersiz bir aktivasyon kodu girdin."
+        },
+        "statusCode": 400
+    },
+    "PASSWORD_UNCHANGED": {
+        "code": "PASSWORD_UNCHANGED",
+        "message": {
+            "en": "The new password must be different than the old password.",
+            "tr": "Yeni şifre eski şifreden farklı olmalıdır."
+        },
+        "statusCode": 400
+    },
+    "ACCOUNT_INACTIVE": {
+        "code": "ACCOUNT_INACTIVE",
+        "message": {
+            "en": "The account is not activated.",
+            "tr": "Hesap henüz aktive edilmemiş."
+        },
+        "statusCode": 403
+    },
+    "ACCOUNT_BLOCKED": {
+        "code": "ACCOUNT_BLOCKED",
+        "message": {
+            "en": "The account is blocked.",
+            "tr": "Hesap bloke edildi."
+        },
+        "statusCode": 403
+    },
+    "ACCOUNT_ALREADY_EXIST": {
+        "code": "ACCOUNT_ALREADY_EXIST",
+        "message": {
+            "en": "The account with the given information is already exist.",
+            "tr": "Girilen bilgilerle bir hesap zaten mevcut."
+        },
+        "statusCode": 403
+    }
+}

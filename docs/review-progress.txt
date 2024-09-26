@@ -1,0 +1,53 @@
+Before the release of version 1.0.0, we decided to review Cell from scratch.
+You can follow the progress of the review here if you would like to.
+
+################################################################################
+# Module                        | Guidelines | README | Code | Test | Examples #
+# ---------------------------------------------------------------------------- #
+# index                         : 0          | 0      | 0     | 0   | 0        #
+# Cell [core]                   : 2          | 0      | 4     | 0   | 0        #
+# Logger [core]                 : 4          | 0      | 4     | 0   | 0        #
+#                                                                              #
+# Safe [core]                   : 0          | 0      | 0     | 0   | 0        #
+# SingularSafe [core]           : 0          | 0      | 0     | 0   | 0        #
+# ErrorSafe [safes]             : 0          | 0      | 0     | 0   | 0        #
+# DbConnectionSafe [safes]      : 0          | 0      | 0     | 0   | 0        #
+# DbSafe [safes]                : 0          | 0      | 0     | 0   | 0        #
+# LanguageSafe [safes]          : 0          | 0      | 0     | 0   | 0        #
+#                                                                              #
+# Interceptor [core]            : 0          | 0      | 0     | 0   | 0        #
+# Server [core]                 : 0          | 0      | 0     | 0   | 0        #
+# DbConnection [db]             : 0          | 0      | 0     | 0   | 0        #
+# Injector [core]               : 0          | 0      | 0     | 0   | 0        #
+#                                                                              #
+#                                                                              #
+# BsonType [db]                 : 0          | 0      | 0     | 0   | 0        #
+# Schema [db]                   : 0          | 0      | 0     | 0   | 0        #
+# DbOperation [db]              : 0          | 0      | 0     | 0   | 0        #
+# SessionManager [db]           : 0          | 0      | 0     | 0   | 0        #
+# Service [core]                : 0          | 0      | 0     | 0   | 0        #
+# DbService [services]          : 0          | 0      | 0     | 0   | 0        #
+# ApplicationService [services] : 0          | 0      | 0     | 0   | 0        #
+# ControllerService [services]  : 0          | 0      | 0     | 0   | 0        #
+#                                                                              #
+#                                                                              #
+# DataType [core]               : 0          | 0      | 0     | 0   | 0        #
+# Controller [core]             : 0          | 0      | 0     | 0   | 0        #
+# AuthController [controllers]  : 0          | 0      | 0     | 0   | 0        #
+# CrudController [controllers]  : 0          | 0      | 0     | 0   | 0        #
+# Router [core]                 : 0          | 0      | 0     | 0   | 0        #
+#                                                                              #
+#                                                                              #
+# Validator [helpers]           : 0          | 0      | 0     | 0   | 0        #
+# ERROR_DATA [helpers]          : 0          | 0      | 0     | 0   | 0        #
+################################################################################
+
+#####################################
+# Status Legend                     #
+# --------------------------------- #
+# Not Started                   : 0 #
+# In Progress                   : 1 #
+# Completed with todos          : 2 #
+# Completed but needs more work : 3 #
+# Completed                     : 4 #
+#####################################
