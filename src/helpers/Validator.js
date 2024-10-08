@@ -24,7 +24,7 @@ class Validator
     /**** Cell ****/
     /**
      * @param {Object} config
-     * @param {number} [config.log]
+     * @param {Object} [config.log]
      * @param {number} [config.log.level]
      * @param {Object} [config.server]
      * @param {boolean} config.server.isEnabled
@@ -54,7 +54,7 @@ class Validator
      * @param {string} config.interceptors.app.path
      * @param {Object} [config.interceptors.final]
      * @param {string} config.interceptors.final.path
-     * @param {Object} [config.errors]
+     * @param {Object} [config.errorData]
      * @public
      */
     static validateParameterConfig (config)
@@ -110,7 +110,7 @@ class Validator
             throw new InvalidArgumentsError();
         }
 
-        if (utility.isExist(config.errors) && !_.isPlainObject(config.errors))
+        if (utility.isExist(config.errorData) && !_.isPlainObject(config.errorData))
         {
             throw new InvalidArgumentsError();
         }
