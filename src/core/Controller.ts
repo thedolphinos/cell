@@ -1,6 +1,6 @@
 import _, {keys} from "lodash";
 
-const {MongoError} = require("mongodb");
+import {MongoError} from "mongodb";
 
 import Logger from "./Logger";
 import Validator from "../helpers/Validator";

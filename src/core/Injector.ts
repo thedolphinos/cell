@@ -74,7 +74,7 @@ class Injector
         if (pathInformation.isFile())
         {
             Validator.validateFilePath(path_);
-            return [require(path.resolve(path_))];
+            return [require(path.resolve(path_)).default];
         }
         else if (pathInformation.isDirectory())
         {
@@ -92,7 +92,7 @@ class Injector
                 if (subPathInformation.isFile())
                 {
                     Validator.validateFilePath(path_);
-                    exports.push(require(path.resolve(subPath)));
+                    exports.push(require(path.resolve(subPath)).default);
                 }
                 else if (subPathInformation.isDirectory())
                 {

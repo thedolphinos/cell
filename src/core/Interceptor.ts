@@ -26,7 +26,7 @@ class Interceptor
             throw new InvalidArgumentsError({"code": "UNASSIGNED", "message": {"en": error.message}});
         }
 
-        const asyncInterceptorFunction: Function = require(path);
+        const asyncInterceptorFunction: Function = require(path).default;
 
         if (!_.isFunction(asyncInterceptorFunction))
         {
