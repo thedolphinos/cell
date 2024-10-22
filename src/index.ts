@@ -3,6 +3,7 @@ import Error from "@thedolphinos/error4js"; // This is imported due to Node's du
 import Cell from "./core/Cell";
 import Logger from "./core/Logger";
 import Validator from "./helpers/Validator";
+import Safe from "./core/Safe";
 import LanguageSafe from "./safes/LanguageSafe";
 import SessionManager from "./db/SessionManager";
 import Injector from "./core/Injector";
@@ -23,6 +24,7 @@ export {
     Cell,
     Logger,
     Validator,
+    Safe,
     LanguageSafe,
     SessionManager,
     Injector,

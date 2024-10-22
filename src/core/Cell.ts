@@ -7,7 +7,7 @@
 
 import process from "node:process";
 
-import express from "express";
+import express, {Express} from "express";
 
 import {isExist} from "@thedolphinos/utility4js";
 import {StaticClassInstantiationError, DATA as ERROR_DATA_OF_ERROR4JS} from "@thedolphinos/error4js";
@@ -109,7 +109,7 @@ class Cell
                 throw new Error();
             }
 
-            const dbConnection = await this.initDbConnection(config.db.connection.uri, config.db.connection?.options);
+            const dbConnection: DbConnection = await this.initDbConnection(config.db.connection.uri, config.db.connection?.options);
 
             if (config?.interceptors?.dbConnection?.isEnabled)
             {
@@ -122,7 +122,7 @@ class Cell
         /* Stage 3: Server */
         if (config.server?.isEnabled)
         {
-            const app = express();
+            const app: Express = express();
 
             if (config?.interceptors?.app?.isEnabled)
             {
