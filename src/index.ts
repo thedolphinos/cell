@@ -1,5 +1,3 @@
-import Error from "@thedolphinos/error4js"; // This is imported due to Node's duplicate module imports which causes reference problems during instanceof checks.
-
 import Cell from "./core/Cell";
 import Logger from "./core/Logger";
 import Validator from "./helpers/Validator";
@@ -20,7 +18,6 @@ import CrudController from "./controllers/CrudController";
 import Router from "./core/Router";
 
 export {
-    Error,
     Cell,
     Logger,
     Validator,

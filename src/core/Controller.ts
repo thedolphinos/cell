@@ -436,16 +436,18 @@ class Controller
     {
         let isConvertToInternalServerError = false;
 
-        if (!(error instanceof DeveloperError) &&
-            !(error instanceof DbError) &&
-            !(error instanceof MongoError) &&
-            !(error instanceof HTTPError))
+        const errorClassName = error.constructor.name; // This is used since Node's duplicate module imports causes reference problems during instanceof checks.
+
+        if (errorClassName !== "DeveloperError" &&
+            errorClassName !== "DbError" &&
+            errorClassName !== "MongoError" &&
+            errorClassName !== "HTTPError")
         {
             isConvertToInternalServerError = true;
             Logger.error(`Unexpected type of error! ${error}`, 9);
         }
 
-        if (error instanceof HTTPError &&
+        if (errorClassName === "HTTPError" &&
             // @ts-ignore
             !Controller.VALID_HTTP_STATUS_CODES.CLIENT_ERROR.includes(error.statusCode) && // TODO: fix this in error4js by making this field mandatory
             // @ts-ignore
@@ -460,19 +462,19 @@ class Controller
             error = new InternalServerError(ErrorSafe.getData().HTTP_11);
         }
 
-        if (!(error instanceof InternalServerError))
+        if (errorClassName !== "InternalServerError")
         {
-            if (error instanceof DeveloperError)
+            if (errorClassName === "DeveloperError")
             {
                 Logger.error(`Developer error is occurred! ${JSON.stringify(error)}`, 9);
                 error = new InternalServerError(ErrorSafe.getData().HTTP_11);
             }
-            else if (error instanceof DbError)
+            else if (errorClassName === "DbError")
             {
                 Logger.error(`Database level error is occurred! ${error}`, 9);
                 error = new ClientError(ErrorSafe.getData().RESOURCE_NOT_FOUND);
             }
-            else if (error instanceof MongoError)
+            else if (errorClassName === "MongoError")
             {
                 Logger.error(`MongoDB level error is occurred! (Code: ${error.code}) (Message: ${error.message}) ${error}`, 9);
 
@@ -485,7 +487,7 @@ class Controller
                     error = new InternalServerError(ErrorSafe.getData().HTTP_11);
                 }
             }
-            else if (error instanceof HTTPError)
+            else if (errorClassName === "HTTPError")
             {
                 Logger.error(`HTTP error is given! ${error}`, 9);
             }
