@@ -1,14 +1,14 @@
 {
     "name": "@thedolphinos/cell",
-    "version": "0.189.1",
-    "description": "A framework to build server side applications using Node.js, Express, and MongoDB.",
+    "version": "0.190.0",
+    "description": "A JavaScript/TypeScript framework to build server side applications using Node.js, Express, and MongoDB.",
     "keywords": [
         "dolphinos",
         "framework",
         "server side",
-        "mongodb",
         "nodejs",
-        "express"
+        "express",
+        "mongodb"
     ],
     "homepage": "https://github.com/thedolphinos/cell",
     "bugs": {
@@ -20,12 +20,16 @@
         "Onur Cipe <onur@dolphinos.com>",
         "Selma Cipe <selma@dolphinos.com>"
     ],
-    "main": "indexn.js",
+    "main": "dist/index.js",
+    "types": "types/index.d.ts",
     "repository": {
         "type": "git",
         "url": "https://github.com/thedolphinos/cell.git"
     },
-    "scripts": {},
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js"
+    },
     "dependencies": {
         "@thedolphinos/error4js": "^0",
         "@thedolphinos/utility4js": "^0",
@@ -37,5 +41,13 @@
         "mongodb": "^6",
         "node-rsa": "^1"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "@types/bcrypt": "^5",
+        "@types/express": "^4",
+        "@types/jsonwebtoken": "^9",
+        "@types/lodash": "^4",
+        "@types/node": "^20",
+        "@types/node-rsa": "^1",
+        "typescript": "^5"
+    }
 }

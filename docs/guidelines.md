@@ -1,39 +1,62 @@
 # Guidelines
 
+## Naming
+
+### File
+
+* Class: PascalCase
+* Enum: SCREAMING_SNAKE_CASE
+* Other: kebab-case
+
+### Directory
+
+* kebab-case
+
 ## Imports
 
 * Imports should be ordered by category.
-* Insert an empty line between each category of packages.
+* Separate categories with a new line.
 
-### Import Order by Package Category
+### Import Order by Category
 
 1. Node.js Core Modules:
-    * process
     * path
     * fs
+    * process
     * http
     * https
-    * util
     * crypto
 2. Third-Party Packages:
     * lodash as _
-    * mongodb
-        * MongoError
-        * Int32
-        * Double
-        * ObjectId
-        * MongoClient
-        * Collection
-        * ClientSession
     * express
+    * mongo
+    * node-rsa
     * bcrypt
-    * jsonwebtoken as jwt
-    * aws-sdk as AWS
-    * mongo-dot-notation as mongoDotNotation
-    * mimemessage
-    * validator
-    * node-email-validator as emailValidator
+    * jsonwebtoken
 3. dolphinOS Packages:
+    * utility4js
+        * isExist
+        * isInitialized
+        * isValidNumber
+        * isValidDate
+        * toUTCDateString
+        * toPromise
+        * assignIfExist
+        * isValidEnum
+        * isValidEnumValue
+        * toEnum
+        * traverseRequireExecuteDeep
+        * isObjectId
+        * isValidId
+        * isSameIds
+        * toObjectId
+        * init
+        * removePropertiesDeeply
+        * removePropertiesFromObjectDeeply
+        * removePropertiesFromArrayDeeply
+        * removeNotExistedPropertiesDeeply
+        * removeNotExistedPropertiesFromObjectDeeply
+        * removeNotExistedPropertiesFromArrayDeeply
     * error4js
         * BaseError
         * DeveloperError
@@ -62,49 +85,26 @@
         * RequiredPropertiesMissingError
         * InvalidCredentialsError
         * InvalidTokenError
-        * AccountBlockedError
         * TokenExpiredError
+        * AccountBlockedError
         * DATA
-    * utility4js
-        * isExist
-        * isInitialized
-        * isValidNumber
-        * isValidDate
-        * toUTCDateString
-        * toPromise
-        * assignIfExist
-        * isValidEnum
-        * isValidEnumValue
-        * toEnum
-        * traverseRequireExecuteDeep
-        * isObjectId
-        * isValidId
-        * isSameIds
-        * toObjectId
-        * init
-        * removePropertiesDeeply
-        * removePropertiesFromObjectDeeply
-        * removePropertiesFromArrayDeeply
-        * removeNotExistedPropertiesDeeply
-        * removeNotExistedPropertiesFromObjectDeeply
-        * removeNotExistedPropertiesFromArrayDeeply
 4. Project-Specific Modules:
     * Cell
     * Logger
-    * Safe
-    * SingularSafe
-    * ErrorSafe
-    * DbConnectionSafe
-    * DbSafe
-    * LanguageSafe
+    * Validator
     * Interceptor
-    * Server
+    * ERROR_DATA
+    * Safe (according to the order introduced)
+        * ErrorSafe
+        * LanguageSafe
+        * DbConnectionSafe
     * DbConnection
+    * SessionManager
+    * Server
     * Injector
     * BsonType
     * Schema
     * DbOperation
-    * SessionManager
     * Service
     * DbService
     * ApplicationService
@@ -114,8 +114,6 @@
     * AuthController
     * CrudController
     * Router
-    * Validator
-    * ERROR_DATA
 
 ## Comments
 

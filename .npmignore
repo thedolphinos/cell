@@ -1,5 +1,9 @@
-dist/
-types/
+docs/
+src/
+.gitattributes
+.gitignore
+.npmignore
+tsconfig.json
 
 # npm
 node_modules/
