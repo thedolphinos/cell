@@ -14,19 +14,19 @@ import {isExist, toPromise} from "@thedolphinos/utility4js";
 
 import Logger from "./Logger";
 
-interface Config
+export interface Config
 {
-    http?: HttpServerConfig,
-    https?: HttpsServerConfig
+    http?: HttpServerConfig;
+    https?: HttpsServerConfig;
 }
 
-interface HttpServerConfig
+export interface HttpServerConfig
 {
     isEnabled: boolean;
     port?: number;
 }
 
-interface HttpsServerConfig
+export interface HttpsServerConfig
 {
     isEnabled: boolean;
     port?: number;

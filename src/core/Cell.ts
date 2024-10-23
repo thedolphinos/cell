@@ -21,7 +21,7 @@ import DbConnectionSafe from "../safes/DbConnectionSafe";
 import DbConnection from "../db/DbConnection";
 import Server from "./Server";
 
-interface Config
+export interface Config
 {
     log?: {
         isEnabled: boolean;

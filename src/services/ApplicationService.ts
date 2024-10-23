@@ -23,75 +23,83 @@ import DbService from "../services/DbService";
  * Uses a DB service to communicate with MongoDB. The DB service is either provided or created from a provided schema or DB operation.
  */
 
-type Options = {
-    schema?: Schema,
-    dbOperation?: DbOperation,
-    dbService?: DbService,
-    persona?: string
-    raiseDocumentExistenceErrors?: boolean
+export interface Options
+{
+    schema?: Schema;
+    dbOperation?: DbOperation;
+    dbService?: DbService;
+    persona?: string;
+    raiseDocumentExistenceErrors?: boolean;
 }
 
-type CountHooks = {
-    bearer?: any,
-    query?: (query: any) => Promise<void>,
-    options?: (options: any) => Promise<void>,
-    before?: (query: any, options: any) => Promise<void>,
-    after?: (count: number) => Promise<void>
+export interface CountHooks
+{
+    bearer?: any;
+    query?: (query: any) => Promise<void>;
+    options?: (options: any) => Promise<void>;
+    before?: (query: any, options: any) => Promise<void>;
+    after?: (count: number) => Promise<void>;
 }
 
-type ReadHooks = {
-    bearer?: any,
-    query?: (query: any) => Promise<void>,
-    options?: (options: any) => Promise<void>,
-    before?: (query: any, options: any, session?: ClientSession) => Promise<void>,
-    after?: (documents: Array<Document>, session?: ClientSession) => Promise<void>
-    isSessionEnabled?: boolean
+export interface ReadHooks
+{
+    bearer?: any;
+    query?: (query: any) => Promise<void>;
+    options?: (options: any) => Promise<void>;
+    before?: (query: any, options: any, session?: ClientSession) => Promise<void>;
+    after?: (documents: Array<Document>, session?: ClientSession) => Promise<void>;
+    isSessionEnabled?: boolean;
 }
 
-type ReadOneHooks = {
-    bearer?: any,
-    query?: (query: any) => Promise<void>,
-    options?: (options: any) => Promise<void>,
-    before?: (query: any, options: any, session?: ClientSession) => Promise<void>,
-    after?: (document: Document | null, session?: ClientSession) => Promise<void>,
-    raiseDocumentExistenceErrors?: boolean,
-    isSessionEnabled?: boolean
+export interface ReadOneHooks
+{
+    bearer?: any;
+    query?: (query: any) => Promise<void>;
+    options?: (options: any) => Promise<void>;
+    before?: (query: any, options: any, session?: ClientSession) => Promise<void>;
+    after?: (document: Document | null, session?: ClientSession) => Promise<void>;
+    raiseDocumentExistenceErrors?: boolean;
+    isSessionEnabled?: boolean;
 }
 
-type CreateOneHooks = {
-    bearer?: any,
-    documentCandidate?: (documentCandidate: any) => Promise<void>,
-    before?: (documentCandidate: any, session?: ClientSession) => Promise<void>,
-    after?: (document: Document, session?: ClientSession) => Promise<void>
-    isSessionEnabled?: boolean
+export interface CreateOneHooks
+{
+    bearer?: any;
+    documentCandidate?: (documentCandidate: any) => Promise<void>;
+    before?: (documentCandidate: any, session?: ClientSession) => Promise<void>;
+    after?: (document: Document, session?: ClientSession) => Promise<void>;
+    isSessionEnabled?: boolean;
 }
 
-type UpdateOneHooks = {
-    bearer?: any,
-    query?: (query: any) => Promise<void>,
-    documentCandidate?: (documentCandidate: any) => Promise<void>,
-    before?: (query: any, document: Document, documentCandidate: any, session?: ClientSession) => Promise<void>,
-    after?: (document: Document | null, session?: ClientSession) => Promise<void>,
-    raiseDocumentExistenceErrors?: boolean,
-    isSessionEnabled?: boolean
+export interface UpdateOneHooks
+{
+    bearer?: any;
+    query?: (query: any) => Promise<void>;
+    documentCandidate?: (documentCandidate: any) => Promise<void>;
+    before?: (query: any, document: Document, documentCandidate: any, session?: ClientSession) => Promise<void>;
+    after?: (document: Document | null, session?: ClientSession) => Promise<void>;
+    raiseDocumentExistenceErrors?: boolean;
+    isSessionEnabled?: boolean;
 }
 
-type SoftDeleteOneHooks = {
-    bearer?: any,
-    query?: (query: any) => Promise<void>,
-    before?: (query: any, document: Document, session?: ClientSession) => Promise<void>,
-    after?: (document: Document | null | undefined, session?: ClientSession) => Promise<void>, // When history is enabled, `document` comes undefined.
-    raiseDocumentExistenceErrors?: boolean,
-    isSessionEnabled?: boolean
+export interface SoftDeleteOneHooks
+{
+    bearer?: any;
+    query?: (query: any) => Promise<void>;
+    before?: (query: any, document: Document, session?: ClientSession) => Promise<void>;
+    after?: (document: Document | null | undefined, session?: ClientSession) => Promise<void>; // When history is enabled, `document` comes undefined.
+    raiseDocumentExistenceErrors?: boolean;
+    isSessionEnabled?: boolean;
 }
 
-type DeleteOneHooks = {
-    bearer?: any,
-    query?: (query: any) => Promise<void>,
-    before?: (query: any, document: Document, session?: ClientSession) => Promise<void>,
-    after?: (document: Document | null | undefined, session?: ClientSession) => Promise<void>, // When history is enabled, `document` comes undefined.
-    raiseDocumentExistenceErrors?: boolean,
-    isSessionEnabled?: boolean
+export interface DeleteOneHooks
+{
+    bearer?: any;
+    query?: (query: any) => Promise<void>;
+    before?: (query: any, document: Document, session?: ClientSession) => Promise<void>;
+    after?: (document: Document | null | undefined, session?: ClientSession) => Promise<void>; // When history is enabled, `document` comes undefined.
+    raiseDocumentExistenceErrors?: boolean;
+    isSessionEnabled?: boolean;
 }
 
 class ApplicationService extends Service

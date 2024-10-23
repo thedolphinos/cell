@@ -16,7 +16,7 @@ import LanguageSafe from "../safes/LanguageSafe";
 import BsonType from "../db/BsonType";
 import Schema from "../db/Schema";
 
-type Layer = "DB" | "APPLICATION" | "CONTROLLER";
+export type Layer = "DB" | "APPLICATION" | "CONTROLLER";
 
 class Service
 {

@@ -13,7 +13,7 @@ import Safe from "../core/Safe";
  * This is expected to be set by the developer in the init interceptor if multilingual schemas will be used.
  */
 
-type LanguageData = Array<string>;
+export type LanguageData = Array<string>;
 
 class LanguageSafe extends Safe
 {

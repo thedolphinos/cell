@@ -5,28 +5,10 @@ import {isExist, isInitialized, init} from "@thedolphinos/utility4js";
 import SessionManager from "../db/SessionManager";
 import ControllerService from "../services/ControllerService";
 import Controller from "../core/Controller";
+import {AllowedPropertiesForRequestElements} from "../core/Router";
 
-type AllowedProperties = {
-    required?: Array<string>;
-    optional?: Array<string>;
-}
-
-type PropertyDefinitionValue = "Boolean" | "Integer" | "Float" | "String" | "ObjectId" | "Date" | "Any"
-
-type PropertyDefinition = {
-    [key: string]: PropertyDefinition |
-        PropertyDefinitionValue |
-        Array<{[key: string]: PropertyDefinition}>
-};
-
-type AllowedPropertiesForRequestElements = {
-    headers?: AllowedProperties;
-    pathParameters?: AllowedProperties;
-    queryString?: AllowedProperties;
-    body?: PropertyDefinition;
-}
-
-type SearchHooks = {
+export interface SearchHooks
+{
     bearer?: any;
     value?: (value: any) => Promise<void>;
     query?: (query: {[key: string]: string}) => Promise<void>;
@@ -36,7 +18,8 @@ type SearchHooks = {
     after?: (documents: Array<Document>, count: number, session?: ClientSession) => Promise<void>;
 }
 
-type ReadHooks = {
+export interface ReadHooks
+{
     bearer?: any;
     query?: (query: {[key: string]: string}) => Promise<void>;
     options?: (options: {[key: string]: string}) => Promise<void>;
@@ -45,14 +28,16 @@ type ReadHooks = {
     after?: (documents: Array<Document>, count: number, session?: ClientSession) => Promise<void>;
 }
 
-type ReadOneByIdHooks = {
+export interface ReadOneByIdHooks
+{
     bearer?: any;
     isSessionEnabled?: boolean;
     before?: (_id: string | ObjectId, options: {[key: string]: string}, session?: ClientSession) => Promise<void>;
     after?: (document: Document | null, session?: ClientSession) => Promise<void>;
 }
 
-type CreateOneHooks = {
+export interface CreateOneHooks
+{
     bearer?: any;
     fields?: (fields: any) => Promise<void>;
     isSessionEnabled?: boolean;
@@ -60,7 +45,8 @@ type CreateOneHooks = {
     after?: (document: Document, session?: ClientSession) => Promise<void>;
 }
 
-type UpdateOneByIdAndVersionHooks = {
+export interface UpdateOneByIdAndVersionHooks
+{
     bearer?: any;
     fields?: (fields: any) => Promise<void>;
     isSessionEnabled?: boolean;
@@ -68,14 +54,16 @@ type UpdateOneByIdAndVersionHooks = {
     after?: (document: Document | null, session?: ClientSession) => Promise<void>;
 }
 
-type SoftDeleteOneByIdAndVersionHooks = {
+export interface SoftDeleteOneByIdAndVersionHooks
+{
     bearer?: any;
     isSessionEnabled?: boolean;
     before?: (_id: string | ObjectId, version: string | number, session?: ClientSession) => Promise<void>;
     after?: (document: Document | null, session?: ClientSession) => Promise<void>;
 }
 
-type DeleteOneByIdAndVersionHooks = {
+export interface DeleteOneByIdAndVersionHooks
+{
     bearer?: any;
     fields?: (fields: any) => Promise<void>;
     isSessionEnabled?: boolean;
@@ -83,7 +71,8 @@ type DeleteOneByIdAndVersionHooks = {
     after?: (document: Document | null, session?: ClientSession) => Promise<void>;
 }
 
-type SoftDeleteManyByIdAndVersionHooks = {
+export interface SoftDeleteManyByIdAndVersionHooks
+{
     bearer?: any;
     isSessionEnabled?: boolean;
     before?: (documents: Array<{_id: string | ObjectId, version: string | number}>, session?: ClientSession) => Promise<void>;

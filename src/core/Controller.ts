@@ -8,20 +8,8 @@ import ErrorSafe from "../safes/ErrorSafe";
 import DataType from "./DataType.json";
 
 import {isExist, isInitialized, isValidNumber, isValidDate, isValidId} from "@thedolphinos/utility4js";
-import {DeveloperError, InvalidArgumentsError, DbError, HTTPError, ClientError, InternalServerError, BadRequestError, ForbiddenError, HeadersMissingError, PathParametersMissingError, QueryStringMissingError, BodyMissingError, RequiredPropertiesMissingError} from "@thedolphinos/error4js";
-
-type AllowedProperties = {
-    required?: Array<string>;
-    optional?: Array<string>;
-}
-
-type PropertyDefinitionValue = "Boolean" | "Integer" | "Float" | "String" | "ObjectId" | "Date" | "Any"
-
-type PropertyDefinition = {
-    [key: string]: PropertyDefinition |
-        PropertyDefinitionValue |
-        Array<{[key: string]: PropertyDefinition}>
-};
+import {InvalidArgumentsError, ClientError, InternalServerError, BadRequestError, ForbiddenError, HeadersMissingError, PathParametersMissingError, QueryStringMissingError, BodyMissingError, RequiredPropertiesMissingError} from "@thedolphinos/error4js";
+import {AllowedProperties, PropertyDefinition} from "./Router";
 
 class Controller
 {

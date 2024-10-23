@@ -1,140 +1,75 @@
-import _ from "lodash";
 import express, {RouterOptions, IRouter} from "express";
 
-import {InvalidArgumentsError} from "@thedolphinos/error4js";
-import {isExist, isInitialized, init} from "@thedolphinos/utility4js";
+import {isExist} from "@thedolphinos/utility4js";
 
-import Validator from "../helpers/Validator";
-import ErrorSafe from "../safes/ErrorSafe";
 import Controller from "./Controller";
-import {ClientSession, Document, ObjectId} from "mongodb";
-import CrudController from "../controllers/CrudController";
+import CrudController, {SearchHooks, ReadHooks, CreateOneHooks, UpdateOneByIdAndVersionHooks, SoftDeleteOneByIdAndVersionHooks, DeleteOneByIdAndVersionHooks, SoftDeleteManyByIdAndVersionHooks} from "../controllers/CrudController";
 
-type AllowedProperties = {
+export interface AllowedProperties
+{
     required?: Array<string>;
     optional?: Array<string>;
 }
 
-type PropertyDefinitionValue = "Boolean" | "Integer" | "Float" | "String" | "ObjectId" | "Date" | "Any"
+export type PropertyDefinitionValue = "Boolean" | "Integer" | "Float" | "String" | "ObjectId" | "Date" | "Any";
 
-type PropertyDefinition = {
+export interface PropertyDefinition
+{
     [key: string]: PropertyDefinition |
         PropertyDefinitionValue |
-        Array<{[key: string]: PropertyDefinition}>
-};
+        Array<{[key: string]: PropertyDefinition}>;
+}
 
-type AllowedPropertiesForRequestElements = {
+export interface AllowedPropertiesForRequestElements
+{
     headers?: AllowedProperties;
     pathParameters?: AllowedProperties;
     queryString?: AllowedProperties;
     body?: PropertyDefinition;
 }
 
-type SearchHooks = {
-    bearer?: any;
-    value?: (value: any) => Promise<void>;
-    query?: (query: {[key: string]: string}) => Promise<void>;
-    options?: (options: {[key: string]: string}) => Promise<void>;
-    isSessionEnabled?: boolean;
-    before?: (value: any, query: {[key: string]: string}, options: {[key: string]: string}, session?: ClientSession) => Promise<void>;
-    after?: (documents: Array<Document>, count: number, session?: ClientSession) => Promise<void>;
-}
-
-type ReadHooks = {
-    bearer?: any;
-    query?: (query: {[key: string]: string}) => Promise<void>;
-    options?: (options: {[key: string]: string}) => Promise<void>;
-    isSessionEnabled?: boolean;
-    before?: (query: {[key: string]: string}, options: {[key: string]: string}, session?: ClientSession) => Promise<void>;
-    after?: (documents: Array<Document>, count: number, session?: ClientSession) => Promise<void>;
-}
-
-type ReadOneByIdHooks = {
-    bearer?: any;
-    isSessionEnabled?: boolean;
-    before?: (_id: string | ObjectId, options: {[key: string]: string}, session?: ClientSession) => Promise<void>;
-    after?: (document: Document | null, session?: ClientSession) => Promise<void>;
-}
-
-type CreateOneHooks = {
-    bearer?: any;
-    fields?: (fields: any) => Promise<void>;
-    isSessionEnabled?: boolean;
-    before?: (fields: any, session?: ClientSession) => Promise<void>;
-    after?: (document: Document, session?: ClientSession) => Promise<void>;
-}
-
-type UpdateOneByIdAndVersionHooks = {
-    bearer?: any;
-    fields?: (fields: any) => Promise<void>;
-    isSessionEnabled?: boolean;
-    before?: (_id: string | ObjectId, version: string | number, fields: any, session?: ClientSession) => Promise<void>;
-    after?: (document: Document | null, session?: ClientSession) => Promise<void>;
-}
-
-type SoftDeleteOneByIdAndVersionHooks = {
-    bearer?: any;
-    isSessionEnabled?: boolean;
-    before?: (_id: string | ObjectId, version: string | number, session?: ClientSession) => Promise<void>;
-    after?: (document: Document | null, session?: ClientSession) => Promise<void>;
-}
-
-type DeleteOneByIdAndVersionHooks = {
-    bearer?: any;
-    fields?: (fields: any) => Promise<void>;
-    isSessionEnabled?: boolean;
-    before?: (_id: string | ObjectId, version: string | number, session?: ClientSession) => Promise<void>;
-    after?: (document: Document | null, session?: ClientSession) => Promise<void>;
-}
-
-type SoftDeleteManyByIdAndVersionHooks = {
-    bearer?: any;
-    isSessionEnabled?: boolean;
-    before?: (documents: Array<{_id: string | ObjectId, version: string | number}>, session?: ClientSession) => Promise<void>;
-    after?: (successfulDocuments: Array<Document>, session?: ClientSession) => Promise<void>;
-}
-
-type RoutesDefinition = {
+export interface RoutesDefinition
+{
     SEARCH: {
-        isEnabled: boolean,
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements,
-        hooks: SearchHooks,
-        searchFields: Array<string>
+        isEnabled: boolean;
+        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        hooks: SearchHooks;
+        searchFields: Array<string>;
     };
     READ: {
-        isEnabled: boolean,
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements,
-        hooks: ReadHooks
+        isEnabled: boolean;
+        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        hooks: ReadHooks;
     };
     READ_ONE_BY_ID: {
-        isEnabled: boolean,
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements,
-        hooks: ReadHooks
+        isEnabled: boolean;
+        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        hooks: ReadHooks;
     };
     CREATE_ONE: {
-        isEnabled: boolean,
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements,
-        hooks: CreateOneHooks
+        isEnabled: boolean;
+        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        hooks: CreateOneHooks;
     };
     UPDATE_ONE_BY_ID_AND_VERSION: {
-        isEnabled: boolean,
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements,
-        hooks: UpdateOneByIdAndVersionHooks
+        isEnabled: boolean;
+        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        hooks: UpdateOneByIdAndVersionHooks;
     };
     SOFT_DELETE_ONE_BY_ID_AND_VERSION: {
-        isEnabled: boolean,
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements,
-        hooks: SoftDeleteOneByIdAndVersionHooks
+        isEnabled: boolean;
+        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        hooks: SoftDeleteOneByIdAndVersionHooks;
     };
     DELETE_ONE_BY_ID_AND_VERSION: {
-        isEnabled: boolean,
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements,
-        hooks: DeleteOneByIdAndVersionHooks
+        isEnabled: boolean;
+        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        hooks: DeleteOneByIdAndVersionHooks;
     };
     SOFT_DELETE_MANY_BY_ID_AND_VERSION: {
-        isEnabled: boolean,
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements,
-        hooks: SoftDeleteManyByIdAndVersionHooks
+        isEnabled: boolean;
+        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        hooks: SoftDeleteManyByIdAndVersionHooks;
     };
 }
 

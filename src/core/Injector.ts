@@ -9,7 +9,7 @@ import {DeveloperError, InvalidArgumentsError} from "@thedolphinos/error4js";
 import Validator from "../helpers/Validator";
 import ErrorSafe from "../safes/ErrorSafe";
 
-type C = any;
+export type C = any;
 
 class Injector
 {

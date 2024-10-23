@@ -17,7 +17,8 @@ import Safe from "../core/Safe";
  * This is set in Cell.run.
  */
 
-type ErrorData = {
+export interface ErrorData
+{
     [error: string]: {
         code: string;
         message: {

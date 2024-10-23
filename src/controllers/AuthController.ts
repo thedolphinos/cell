@@ -14,58 +14,39 @@ import ErrorSafe from "../safes/ErrorSafe";
 import SessionManager from "../db/SessionManager";
 import ApplicationService from "../services/ApplicationService";
 import Controller from "../core/Controller";
+import {AllowedPropertiesForRequestElements, AllowedProperties} from "../core/Router";
 
-type Options = {
+export interface Options
+{
     propertyNameOfUserIdentifier: string;
     propertyNameOfPassword: string;
-
     encryptionKey: string;
     encryptionIv: string;
     encryptionPassphrase: string;
-
     tokenPrivateKey: string;
     tokenLifetime: number;
-
     maxAllowedInvalidLoginAttempts: number;
     maxAllowedInvalidChangePasswordAttempts: number;
-
     isActivationEnabled: boolean;
     activationLinkPrivateKey?: string; // Required when `isActivationEnabled` is true.
     activationLinkLifeTime?: number; // Required when `isActivationEnabled` is true.
 }
 
-type AllowedProperties = {
-    required?: Array<string>;
-    optional?: Array<string>;
-}
-
-type PropertyDefinitionValue = "Boolean" | "Integer" | "Float" | "String" | "ObjectId" | "Date" | "Any"
-
-type PropertyDefinition = {
-    [key: string]: PropertyDefinition |
-        PropertyDefinitionValue |
-        Array<{[key: string]: PropertyDefinition}>
-};
-
-type AllowedPropertiesForRequestElements = {
-    headers?: AllowedProperties;
-    pathParameters?: AllowedProperties;
-    queryString?: AllowedProperties;
-    body?: PropertyDefinition;
-}
-
-type VerifyPublicHooks = {
+export interface VerifyPublicHooks
+{
     bearer?: any;
     headers?: (headers: any) => Promise<void>;
 }
 
-type VerifyPrivateHooks = {
+export interface VerifyPrivateHooks
+{
     bearer?: any;
     headers?: (headers: any) => Promise<void>;
     data?: (data: any, account: Document) => Promise<void>;
 }
 
-type RegisterHooks = {
+export interface RegisterHooks
+{
     bearer?: any;
     body?: (body: any) => Promise<void>;
     userIdentifier?: (userIdentifier: any) => Promise<void>;
@@ -78,7 +59,8 @@ type RegisterHooks = {
     data?: (data: any, account: Document) => Promise<void>;
 }
 
-type ActivateHooks = {
+export interface ActivateHooks
+{
     bearer?: any;
     body?: (body: any) => Promise<void>;
     isSessionEnabled?: boolean;
@@ -87,7 +69,8 @@ type ActivateHooks = {
     data?: (data: any, account: Document) => Promise<void>;
 }
 
-type LoginHooks = {
+export interface LoginHooks
+{
     bearer?: any;
     body?: (body: any) => Promise<void>;
     query?: (query: any) => Promise<void>;
@@ -95,12 +78,14 @@ type LoginHooks = {
     data?: (data: any, account: Document) => Promise<void>;
 }
 
-type AuthorizeHooks = {
+export interface AuthorizeHooks
+{
     body?: (body: any) => Promise<void>;
     data?: (data: any, account: Document) => Promise<void>;
 }
 
-type ChangePasswordHooks = {
+export interface ChangePasswordHooks
+{
     bearer?: any;
     body?: (body: any) => Promise<void>;
     password?: (oldPassword: string, newPassword: string) => Promise<void>;
