@@ -91,12 +91,12 @@ class Injector
 
                 if (subPathInformation.isFile())
                 {
-                    Validator.validateFilePath(path_);
+                    Validator.validateFilePath(subPath);
                     exports.push(require(path.resolve(subPath)).default);
                 }
                 else if (subPathInformation.isDirectory())
                 {
-                    Validator.validateDirectoryPath(path_);
+                    Validator.validateDirectoryPath(subPath);
                     exports = _.concat(exports, this.importDeep(subPath));
                 }
             }
