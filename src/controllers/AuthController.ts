@@ -55,7 +55,7 @@ export interface RegisterHooks
     isSessionEnabled?: boolean;
     before?: (body: any, session?: ClientSession) => Promise<void>;
     after?: (body: any, session?: ClientSession) => Promise<void>;
-    activation?: (account: Document, activationCode: string, activationLink: string, session?: ClientSession) => Promise<void>; // If activation is enabled.
+    activation?: (account: Document, activationCode: string, activationLink: string) => Promise<void>; // If activation is enabled.
     data?: (data: any, account: Document) => Promise<void>;
 }
 
