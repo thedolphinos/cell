@@ -14,7 +14,7 @@ import ErrorSafe from "../safes/ErrorSafe";
 import SessionManager from "../db/SessionManager";
 import ApplicationService from "../services/ApplicationService";
 import Controller from "../core/Controller";
-import {AllowedPropertiesForRequestElements, AllowedProperties} from "../core/Router";
+import {AllowedPropertiesForRequestElements, AllowedProperties, SpecialAllowedPropertyAll} from "../core/Router";
 
 export interface Options
 {
@@ -187,14 +187,14 @@ class AuthController extends Controller
     /**
      * This does not contain any logic. Hooks should be used to place logic.
      */
-    public async verifyPublic (request: any, response: any, next?: any, hooks ?: VerifyPublicHooks, allowedPropertiesForHeaders?: AllowedProperties): Promise<void>
+    public async verifyPublic (request: any, response: any, next?: any, hooks ?: VerifyPublicHooks, allowedPropertiesForHeaders?: AllowedProperties | SpecialAllowedPropertyAll): Promise<void>
     {
         try
         {
-            if (isExist(allowedPropertiesForHeaders) && !Validator.isValidParameterAllowedPropertiesForRequestElements({headers: allowedPropertiesForHeaders}))
-            {
-                throw new InvalidArgumentsError(ErrorSafe.getData().DEV_1);
-            }
+            // if (isExist(allowedPropertiesForHeaders) && !Validator.isValidParameterAllowedPropertiesForRequestElements({headers: allowedPropertiesForHeaders}))
+            // {
+            //     throw new InvalidArgumentsError(ErrorSafe.getData().DEV_1);
+            // } TODO
 
             hooks = init(hooks, {});
             hooks.bearer = init(hooks.bearer, {});

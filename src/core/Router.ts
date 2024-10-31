@@ -11,6 +11,8 @@ export interface AllowedProperties
     optional?: Array<string>;
 }
 
+export type SpecialAllowedPropertyAll = "*"
+
 export type PropertyDefinitionValue = "Boolean" | "Integer" | "Float" | "String" | "ObjectId" | "Date" | "Any";
 
 export interface PropertyDefinition

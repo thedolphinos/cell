@@ -9,7 +9,7 @@ import DataType from "./DataType.json";
 
 import {isExist, isInitialized, isValidNumber, isValidDate, isValidId} from "@thedolphinos/utility4js";
 import {InvalidArgumentsError, ClientError, InternalServerError, BadRequestError, ForbiddenError, HeadersMissingError, PathParametersMissingError, QueryStringMissingError, BodyMissingError, RequiredPropertiesMissingError} from "@thedolphinos/error4js";
-import {AllowedProperties, PropertyDefinition} from "./Router";
+import {AllowedProperties, PropertyDefinition, SpecialAllowedPropertyAll} from "./Router";
 
 class Controller
 {
@@ -43,17 +43,17 @@ class Controller
         SERVER_ERROR: [500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511]
     };
 
-    protected static extractAndAuthorizeHeaders (request: any, allowedProperties: AllowedProperties, isRequired: boolean = false): any
+    protected static extractAndAuthorizeHeaders (request: any, allowedProperties: AllowedProperties | SpecialAllowedPropertyAll, isRequired: boolean = false): any
     {
         return Controller.extractAndAuthorizeRequestElement(Controller.REQUEST_ELEMENT.HEADERS, request, allowedProperties, undefined, isRequired);
     }
 
-    protected static extractAndAuthorizePathParameters (request: any, allowedProperties: AllowedProperties, isRequired: boolean): any
+    protected static extractAndAuthorizePathParameters (request: any, allowedProperties: AllowedProperties | SpecialAllowedPropertyAll, isRequired: boolean): any
     {
         return Controller.extractAndAuthorizeRequestElement(Controller.REQUEST_ELEMENT.PATH_PARAMETERS, request, allowedProperties, undefined, isRequired);
     }
 
-    protected static extractAndAuthorizeQueryString (request: any, allowedProperties: AllowedProperties, isRequired: boolean): any
+    protected static extractAndAuthorizeQueryString (request: any, allowedProperties: AllowedProperties | SpecialAllowedPropertyAll, isRequired: boolean): any
     {
         return Controller.extractAndAuthorizeRequestElement(Controller.REQUEST_ELEMENT.QUERY_STRING, request, allowedProperties, undefined, isRequired);
     }
@@ -63,7 +63,7 @@ class Controller
         return Controller.extractAndAuthorizeRequestElement(Controller.REQUEST_ELEMENT.BODY, request, undefined, propertyDefinition, isRequired);
     }
 
-    private static extractAndAuthorizeRequestElement (requestElement: string, request: any, allowedProperties?: AllowedProperties, propertyDefinition?: PropertyDefinition, isRequired: boolean = true): any
+    private static extractAndAuthorizeRequestElement (requestElement: string, request: any, allowedProperties?: AllowedProperties | SpecialAllowedPropertyAll, propertyDefinition?: PropertyDefinition, isRequired: boolean = true): any
     {
         const extractedRequestElement: any = request[requestElement];
 
@@ -188,51 +188,72 @@ class Controller
         return extractedRequestElement;
     }
 
-    private static authorizePropertiesForAllowedProperties (object: any, allowedProperties: AllowedProperties): void
+    private static authorizePropertiesForAllowedProperties (object: any, allowedProperties: AllowedProperties | SpecialAllowedPropertyAll): void
     {
-        allowedProperties = _.cloneDeep(allowedProperties); // To lose reference.
+        const isString = _.isString(allowedProperties);
+        const isPlainObject = _.isPlainObject(allowedProperties);
 
-        for (const property in object)
+        if (isString)
         {
-            let isAllowed = false;
-
-            if (isExist(allowedProperties.required))
+            if (<SpecialAllowedPropertyAll>allowedProperties === "*")
             {
-                const index = allowedProperties.required.indexOf(property);
+                return;
+            }
+            else
+            {
+                throw new BadRequestError(ErrorSafe.getData().HTTP_21);
+            }
+        }
+        else if (isPlainObject)
+        {
+            allowedProperties = _.cloneDeep(<AllowedProperties>allowedProperties); // To lose reference.
 
-                if (index > -1)
+            for (const property in object)
+            {
+                let isAllowed = false;
+
+                if (isExist(allowedProperties.required))
                 {
-                    isAllowed = true;
-                    allowedProperties.required.splice(index, 1); // Remove the sent property to check if all required properties are sent.
+                    const index = allowedProperties.required.indexOf(property);
+
+                    if (index > -1)
+                    {
+                        isAllowed = true;
+                        allowedProperties.required.splice(index, 1); // Remove the sent property to check if all required properties are sent.
+                    }
+                }
+
+                if (isExist(allowedProperties.optional))
+                {
+                    if (allowedProperties.optional.includes(property))
+                    {
+                        isAllowed = true;
+                    }
+                }
+
+                if (!isAllowed)
+                {
+                    Logger.error(`Property "${property}" is not allowed!`, 9);
+                    throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
                 }
             }
 
-            if (isExist(allowedProperties.optional))
+            if (isExist(allowedProperties.required) && allowedProperties.required.length !== 0)
             {
-                if (allowedProperties.optional.includes(property))
-                {
-                    isAllowed = true;
-                }
-            }
+                const notSentProperties = "";
 
-            if (!isAllowed)
-            {
-                Logger.error(`Property "${property}" is not allowed!`, 9);
+                for (const property of allowedProperties.required)
+                {
+                    notSentProperties.concat(`${property} ,`);
+                }
+
+                Logger.error(`Required properties "${notSentProperties.slice(0, -2)}" are not sent!`, 9);
                 throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
             }
         }
-
-        if (isExist(allowedProperties.required) && allowedProperties.required.length !== 0)
+        else
         {
-            const notSentProperties = "";
-
-            for (const property of allowedProperties.required)
-            {
-                notSentProperties.concat(`${property} ,`);
-            }
-
-            Logger.error(`Required properties "${notSentProperties.slice(0, -2)}" are not sent!`, 9);
-            throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
+            throw new BadRequestError(ErrorSafe.getData().HTTP_21);
         }
     }
 
