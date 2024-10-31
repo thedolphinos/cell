@@ -82,7 +82,7 @@ export interface SoftDeleteManyByIdAndVersionHooks
 class CrudController extends Controller
 {
     public readonly apiType: string;
-    private readonly controllerService: ControllerService;
+    protected readonly controllerService: ControllerService;
 
     constructor (apiType: string, controllerService: ControllerService)
     {
