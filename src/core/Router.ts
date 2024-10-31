@@ -24,9 +24,9 @@ export interface PropertyDefinition
 
 export interface AllowedPropertiesForRequestElements
 {
-    headers?: AllowedProperties;
-    pathParameters?: AllowedProperties;
-    queryString?: AllowedProperties;
+    headers?: AllowedProperties | SpecialAllowedPropertyAll;
+    pathParameters?: AllowedProperties | SpecialAllowedPropertyAll;
+    queryString?: AllowedProperties | SpecialAllowedPropertyAll;
     body?: PropertyDefinition;
 }
 
