@@ -336,6 +336,9 @@ class AuthController extends Controller
 
             isExist(hooks.query) ? await hooks.query(query) : undefined;
 
+            let activationCode: string | null = null;
+            let activationLink: string | null = null;
+
             let account: Document | null;
             const {session} = SessionManager.generateSession(undefined, hooks.isSessionEnabled);
             await SessionManager.exec(
@@ -397,7 +400,7 @@ class AuthController extends Controller
 
                     if (this.isActivationEnabled)
                     {
-                        let activationCode: string = "";
+                        activationCode = "";
 
                         for (let i = 0; i < 6; i++)
                         {
@@ -406,7 +409,7 @@ class AuthController extends Controller
                         }
 
                         // @ts-ignore
-                        const activationLink = await this.prepareEncryptedAuthorizationBundle(account, {activationCode}, this.activationLinkPrivateKey, this.activationLinkLifeTime); // Symmetric encryption.
+                        activationLink = await this.prepareEncryptedAuthorizationBundle(account, {activationCode}, this.activationLinkPrivateKey, this.activationLinkLifeTime); // Symmetric encryption.
 
                         account = await this.applicationService.updateOneByIdAndVersion(
                             account._id,
@@ -419,15 +422,17 @@ class AuthController extends Controller
                             },
                             session
                         );
-
-                        isExist(hooks.activation) ? await hooks.activation(account, activationCode, activationLink, session) : undefined;
                     }
                 },
                 undefined,
                 session
             );
 
-            if (!this.isActivationEnabled)
+            if (this.isActivationEnabled)
+            {
+                isExist(hooks.activation) ? await hooks.activation(account, activationCode, activationLink) : undefined;
+            }
+            else
             {
                 // @ts-ignore
                 response.locals.authorizationBundle = await this.generateEncryptedAuthorizationBundle(account, {}, this.tokenPrivateKey, this.tokenLifetime);
