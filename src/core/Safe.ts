@@ -5,8 +5,6 @@
  * Guidelines - Comments: ✓
  */
 
-import {isExist, isInitialized} from "@thedolphinos/utility4js";
-
 /**
  * The framework's data storage mechanism.
  *
@@ -16,32 +14,32 @@ import {isExist, isInitialized} from "@thedolphinos/utility4js";
 
 class Safe
 {
-    protected static instance: Safe;
+    private static instances: Map<new () => Safe, Safe> = new Map();
 
     protected data: any;
 
-    protected constructor () {}
+    constructor () {}
 
-    protected static getInstance (): Safe
+    private static getInstance<T extends Safe> (this: new () => T): T
     {
-        if (!isExist(Safe.instance))
+        if (!Safe.instances.has(this))
         {
-            Safe.instance = new Safe();
+            Safe.instances.set(this, new this());
         }
 
-        return Safe.instance;
+        return Safe.instances.get(this) as T;
     }
 
     public static getData (): any
     {
-        const safe: Safe = Safe.getInstance();
-        return safe.data;
+        const instance: Safe = this.getInstance();
+        return instance.data;
     }
 
     public static setData (value: any): void
     {
-        const safe: Safe = Safe.getInstance();
-        safe.data = value;
+        const instance: Safe = this.getInstance();
+        instance.data = value;
     }
 }
 
