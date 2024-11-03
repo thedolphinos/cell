@@ -409,7 +409,7 @@ class AuthController extends Controller
                         }
 
                         // @ts-ignore
-                        activationLink = await this.prepareEncryptedAuthorizationBundle(account, {activationCode}, this.activationLinkPrivateKey, this.activationLinkLifeTime); // Symmetric encryption.
+                        activationLink = await this.generateEncryptedAuthorizationBundle(account, {activationCode}, this.activationLinkPrivateKey, this.activationLinkLifeTime); // Symmetric encryption.
 
                         account = await this.applicationService.updateOneByIdAndVersion(
                             account._id,
