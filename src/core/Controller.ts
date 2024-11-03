@@ -427,8 +427,8 @@ class Controller
         {
             try
             {
-                Logger.error(`Error occurred while sending error (stringified):\n${JSON.stringify(error)}`, 9);
-
+                Logger.error(`Error occurred while sending error (stringified):\n${error}`, 9);
+                console.error(error);
                 response.status(500).json();
             }
             catch (error)
@@ -454,6 +454,7 @@ class Controller
         {
             isConvertToInternalServerError = true;
             Logger.error(`Unexpected type of error! ${error}`, 9);
+            console.error(error);
         }
 
         if (errorClassName === "HTTPError" &&
@@ -464,6 +465,7 @@ class Controller
         {
             isConvertToInternalServerError = true;
             Logger.error(`Unexpected status code for HTTP error! ${error}`, 9);
+            console.error(error);
         }
 
         if (isConvertToInternalServerError)
@@ -475,17 +477,20 @@ class Controller
         {
             if (errorClassName === "DeveloperError")
             {
-                Logger.error(`Developer error is occurred! ${JSON.stringify(error)}`, 9);
+                Logger.error(`Developer error is occurred! ${error}`, 9);
+                console.error(error);
                 error = new InternalServerError(ErrorSafe.getData().HTTP_11);
             }
             else if (errorClassName === "DbError")
             {
                 Logger.error(`Database level error is occurred! ${error}`, 9);
+                console.error(error);
                 error = new ClientError(ErrorSafe.getData().RESOURCE_NOT_FOUND);
             }
             else if (errorClassName === "MongoError")
             {
                 Logger.error(`MongoDB level error is occurred! (Code: ${error.code}) (Message: ${error.message}) ${error}`, 9);
+                console.error(error);
 
                 if (error.code === 121)
                 {
@@ -499,6 +504,7 @@ class Controller
             else if (errorClassName === "HTTPError")
             {
                 Logger.error(`HTTP error is given! ${error}`, 9);
+                console.error(error);
             }
         }
 

@@ -152,12 +152,16 @@ class Cell
         process.on("uncaughtExceptionMonitor", (error, origin) =>
         {
             Logger.error(`Uncaught Exception\nerror:${error}\norigin:${origin}`, 0);
+            console.error(error);
+            console.error(origin);
         });
 
         // https://nodejs.org/api/process.html#event-unhandledrejection
         process.on("unhandledRejection", (reason, promise) =>
         {
             Logger.error(`Unhandled Rejection\nreason${reason}\npromise:${promise}`, 0);
+            console.error(reason);
+            console.error(promise);
         });
     }
 
