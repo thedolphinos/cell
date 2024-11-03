@@ -843,10 +843,10 @@ class AuthController extends Controller
      */
     private async generateEncryptedAuthorizationBundle (account: Document, tokenPayload: any, tokenPrivateKey: string, tokenLifeTime: number): Promise<string>
     {
-        tokenPayload._account = account._id;
+        tokenPayload._account = account._id.toString();
 
         const token = jwt.sign(
-            JSON.stringify(tokenPayload),
+            tokenPayload,
             tokenPrivateKey,
             {
                 algorithm: "HS512",
@@ -858,7 +858,7 @@ class AuthController extends Controller
 
         const authorizationBundle = {
             token: encryptedToken,
-            _account: account._id
+            _account: account._id.toString()
         };
 
         return this.encrypt(JSON.stringify(authorizationBundle), this.encryptionKey, this.encryptionIv);
