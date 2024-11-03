@@ -208,7 +208,7 @@ class Schema
                             }
                             default:
                             {
-                                Logger.error(`MongoDB level error is occurred: (CODE ${error.code}) ${error.message} ${error}`, 9);
+                                Logger.warn(`MongoDB level error is occurred!\nCode: ${error.code}\nMessage: ${error.message}\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
                                 console.error(error);
                             }
                         }
@@ -229,7 +229,7 @@ class Schema
                 }
                 default:
                 {
-                    Logger.error(`MongoDB level error is occurred: (CODE ${error.code}) ${error.message} ${error}`, 9);
+                    Logger.warn(`MongoDB level error is occurred!\nCode: ${error.code}\nMessage: ${error.message}\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
                     console.error(error);
                 }
             }

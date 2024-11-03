@@ -151,7 +151,7 @@ class Cell
         // https://nodejs.org/api/process.html#event-uncaughtexception
         process.on("uncaughtExceptionMonitor", (error, origin) =>
         {
-            Logger.error(`Uncaught Exception\nerror:${error}\norigin:${origin}`, 0);
+            Logger.error(`Uncaught Exception\nError:\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}\nOrigin:\n${isExist(origin.toString) ? origin.toString() : JSON.stringify(origin)}`, 0);
             console.error(error);
             console.error(origin);
         });
@@ -159,7 +159,7 @@ class Cell
         // https://nodejs.org/api/process.html#event-unhandledrejection
         process.on("unhandledRejection", (reason, promise) =>
         {
-            Logger.error(`Unhandled Rejection\nreason${reason}\npromise:${promise}`, 0);
+            Logger.error(`Unhandled Rejection\nReason:\n${isExist(reason.toString) ? reason.toString() : JSON.stringify(reason)}\nPromise:\n${isExist(promise.toString) ? promise.toString() : JSON.stringify(promise)}`, 0);
             console.error(reason);
             console.error(promise);
         });

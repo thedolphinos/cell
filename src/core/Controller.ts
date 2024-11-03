@@ -66,13 +66,16 @@ class Controller
     private static extractAndAuthorizeRequestElement (requestElement: string, request: any, allowedProperties?: AllowedProperties | SpecialAllowedPropertyAll, propertyDefinition?: PropertyDefinition, isRequired: boolean = true): any
     {
         const extractedRequestElement: any = request[requestElement];
-
+        let requestElementErrorName: string;
         const isSent: boolean = isInitialized(extractedRequestElement);
 
         switch (requestElement)
         {
+
             case Controller.REQUEST_ELEMENT.HEADERS:
             {
+                requestElementErrorName = "headers";
+
                 if (isExist(allowedProperties))
                 {
                     if (!Validator.isValidParameterAllowedProperties(allowedProperties))
@@ -85,14 +88,14 @@ class Controller
                     }
                     if (isSent)
                     {
-                        Controller.authorizePropertiesForAllowedProperties(extractedRequestElement, allowedProperties);
+                        Controller.authorizePropertiesForAllowedProperties(requestElementErrorName, extractedRequestElement, allowedProperties);
                     }
                 }
                 else
                 {
                     if (isSent)
                     {
-                        Logger.error(`Headers are not allowed but sent!`, 9);
+                        Logger.warn(`In the request, "${requestElementErrorName}" is sent when not allowed!`, 9);
                         throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
                     }
                 }
@@ -101,6 +104,8 @@ class Controller
             }
             case Controller.REQUEST_ELEMENT.PATH_PARAMETERS:
             {
+                requestElementErrorName = "path parameters";
+
                 if (isExist(allowedProperties))
                 {
                     if (!Validator.isValidParameterAllowedProperties(allowedProperties))
@@ -113,14 +118,14 @@ class Controller
                     }
                     if (isSent)
                     {
-                        Controller.authorizePropertiesForAllowedProperties(extractedRequestElement, allowedProperties);
+                        Controller.authorizePropertiesForAllowedProperties(requestElementErrorName, extractedRequestElement, allowedProperties);
                     }
                 }
                 else
                 {
                     if (isSent)
                     {
-                        Logger.error(`Path parameters are not allowed but sent!`, 9);
+                        Logger.warn(`In the request, "${requestElementErrorName}" is sent when not allowed!`, 9);
                         throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
                     }
                 }
@@ -129,6 +134,8 @@ class Controller
             }
             case Controller.REQUEST_ELEMENT.QUERY_STRING:
             {
+                requestElementErrorName = "query string";
+
                 if (isExist(allowedProperties))
                 {
                     if (!Validator.isValidParameterAllowedProperties(allowedProperties))
@@ -141,14 +148,14 @@ class Controller
                     }
                     if (isSent)
                     {
-                        Controller.authorizePropertiesForAllowedProperties(extractedRequestElement, allowedProperties);
+                        Controller.authorizePropertiesForAllowedProperties(requestElementErrorName, extractedRequestElement, allowedProperties);
                     }
                 }
                 else
                 {
                     if (isSent)
                     {
-                        Logger.error(`Query string is not allowed but sent!`, 9);
+                        Logger.warn(`In the request, "${requestElementErrorName}" is sent when not allowed!`, 9);
                         throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
                     }
                 }
@@ -157,6 +164,8 @@ class Controller
             }
             case Controller.REQUEST_ELEMENT.BODY:
             {
+                requestElementErrorName = "body";
+
                 if (isExist(propertyDefinition))
                 {
                     if (!Validator.isValidParameterPropertyDefinition(propertyDefinition))
@@ -169,14 +178,14 @@ class Controller
                     }
                     if (isSent)
                     {
-                        Controller.authorizePropertiesForPropertyDefinition(extractedRequestElement, propertyDefinition);
+                        Controller.authorizePropertiesForPropertyDefinition("", extractedRequestElement, propertyDefinition);
                     }
                 }
                 else
                 {
                     if (isSent)
                     {
-                        Logger.error(`Body is not allowed but sent!`, 9);
+                        Logger.warn(`In the request, "${requestElementErrorName}" is sent when not allowed!`, 9);
                         throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
                     }
                 }
@@ -188,7 +197,7 @@ class Controller
         return extractedRequestElement;
     }
 
-    private static authorizePropertiesForAllowedProperties (object: any, allowedProperties: AllowedProperties | SpecialAllowedPropertyAll): void
+    private static authorizePropertiesForAllowedProperties (requestElementErrorName: string, object: any, allowedProperties: AllowedProperties | SpecialAllowedPropertyAll): void
     {
         const isString = _.isString(allowedProperties);
         const isPlainObject = _.isPlainObject(allowedProperties);
@@ -233,7 +242,7 @@ class Controller
 
                 if (!isAllowed)
                 {
-                    Logger.error(`Property "${property}" is not allowed!`, 9);
+                    Logger.warn(`In the "${requestElementErrorName}", property "${property}" is not allowed!`, 9);
                     throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
                 }
             }
@@ -241,13 +250,15 @@ class Controller
             if (isExist(allowedProperties.required) && allowedProperties.required.length !== 0)
             {
                 const notSentProperties = "";
+                let notSentPropertyCount = 0;
 
                 for (const property of allowedProperties.required)
                 {
                     notSentProperties.concat(`${property} ,`);
+                    notSentPropertyCount++;
                 }
 
-                Logger.error(`Required properties "${notSentProperties.slice(0, -2)}" are not sent!`, 9);
+                Logger.warn(`In the "${requestElementErrorName}", required ${notSentPropertyCount === 1 ? "property" : "properties"} "${notSentProperties.slice(0, -2)}" ${notSentPropertyCount === 1 ? "is" : "are"} not sent!`, 9);
                 throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
             }
         }
@@ -257,7 +268,7 @@ class Controller
         }
     }
 
-    private static authorizePropertiesForPropertyDefinition (value: any, propertyDefinition: PropertyDefinition, upperObject?: any, upperKey?: string | number, isRegexBased: boolean = false): void
+    private static authorizePropertiesForPropertyDefinition (deepKey: string, value: any, propertyDefinition: PropertyDefinition, upperObject?: any, upperKey?: string | number, isRegexBased: boolean = false): void
     {
         const isRecursiveCall = isExist(upperObject) && isExist(upperKey); // Controls validation of `propertyDefinition`, which is not made on the recursive calls.
 
@@ -324,12 +335,18 @@ class Controller
 
             if (isInvalidType)
             {
-                Logger.error(`Property type is not allowed! It must be type of "${propertyDefinition}".`, 9);
+                Logger.warn(`In the "body", for property "${deepKey}", property type is invalid.`, 9);
                 throw new BadRequestError(ErrorSafe.getData().HTTP_21);
             }
         }
         else if (isPlainObject)
         {
+            if (!_.isPlainObject(clonedValue))
+            {
+                Logger.warn(`In the "body", for property "${deepKey}", property type is invalid. It must be an object.`, 9);
+                throw new BadRequestError(ErrorSafe.getData().HTTP_21);
+            }
+
             for (const key in propertyDefinition)
             {
                 const isRequired = key.startsWith(":"); // Required property (must be sent with a value which is not undefined or null).
@@ -347,14 +364,14 @@ class Controller
                 if (isExist(propertyValue))
                 {
                     // @ts-ignore
-                    Controller.authorizePropertiesForPropertyDefinition(propertyValue, propertyDefinition[key], !isRecursiveCall ? value : upperObject[upperKey], propertyName, isRegexBased);
+                    Controller.authorizePropertiesForPropertyDefinition(`${deepKey}.${key}`, propertyValue, propertyDefinition[key], !isRecursiveCall ? value : upperObject[upperKey], propertyName, isRegexBased);
                 }
                 else
                 {
                     if (isRequired ||
                         (isNullable && propertyValue !== null))
                     {
-                        Logger.error(`Required property is not sent!`, 9);
+                        Logger.warn(`In the "body", property "${deepKey}.${key}" is required but not sent!`, 9);
                         throw new RequiredPropertiesMissingError(ErrorSafe.getData().HTTP_219);
                     }
 
@@ -363,7 +380,7 @@ class Controller
 
             if (isInitialized(clonedValue))
             {
-                Logger.error(`Not allowed properties are sent!`, 9);
+                Logger.warn(`In the "body", for property "${deepKey}", not allowed properties are sent!`, 9);
                 throw new BadRequestError(ErrorSafe.getData().HTTP_21);
             }
         }
@@ -371,13 +388,13 @@ class Controller
         {
             if (!_.isArray(clonedValue))
             {
-                Logger.error(`Invalid property! It must be an array.`, 9);
+                Logger.warn(`In the "body", for property "${deepKey}", property type is invalid. It must be an array.`, 9);
                 throw new BadRequestError(ErrorSafe.getData().HTTP_21);
             }
 
             for (let i = 0; i < clonedValue.length; i++)
             {
-                Controller.authorizePropertiesForPropertyDefinition(clonedValue[i], propertyDefinition[0], !isRecursiveCall ? value : upperObject[upperKey], i);
+                Controller.authorizePropertiesForPropertyDefinition(`${deepKey}.${i}`, clonedValue[i], propertyDefinition[0], !isRecursiveCall ? value : upperObject[upperKey], i);
             }
         }
     }
@@ -427,7 +444,7 @@ class Controller
         {
             try
             {
-                Logger.error(`Error occurred while sending error (stringified):\n${error}`, 9);
+                Logger.error(`Error occurred while sending error:\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
                 console.error(error);
                 response.status(500).json();
             }
@@ -453,7 +470,7 @@ class Controller
             errorClassName !== "HTTPError")
         {
             isConvertToInternalServerError = true;
-            Logger.error(`Unexpected type of error! ${error}`, 9);
+            Logger.warn(`Internal server error occurred!\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
             console.error(error);
         }
 
@@ -464,7 +481,7 @@ class Controller
             !Controller.VALID_HTTP_STATUS_CODES.SERVER_ERROR.includes(error.statusCode))
         {
             isConvertToInternalServerError = true;
-            Logger.error(`Unexpected status code for HTTP error! ${error}`, 9);
+            Logger.warn(`Unexpected status code for HTTP error!\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
             console.error(error);
         }
 
@@ -477,19 +494,19 @@ class Controller
         {
             if (errorClassName === "DeveloperError")
             {
-                Logger.error(`Developer error is occurred! ${error}`, 9);
+                Logger.warn(`Developer error is occurred!\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
                 console.error(error);
                 error = new InternalServerError(ErrorSafe.getData().HTTP_11);
             }
             else if (errorClassName === "DbError")
             {
-                Logger.error(`Database level error is occurred! ${error}`, 9);
+                Logger.warn(`Database level error is occurred!\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
                 console.error(error);
                 error = new ClientError(ErrorSafe.getData().RESOURCE_NOT_FOUND);
             }
             else if (errorClassName === "MongoError")
             {
-                Logger.error(`MongoDB level error is occurred! (Code: ${error.code}) (Message: ${error.message}) ${error}`, 9);
+                Logger.warn(`MongoDB level error is occurred!\nCode: ${error.code}\nMessage: ${error.message}\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
                 console.error(error);
 
                 if (error.code === 121)
@@ -503,7 +520,7 @@ class Controller
             }
             else if (errorClassName === "HTTPError")
             {
-                Logger.error(`HTTP error is given! ${error}`, 9);
+                Logger.warn(`HTTP error is given!\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
                 console.error(error);
             }
         }
