@@ -2,9 +2,7 @@ import fs from "node:fs";
 
 import _ from "lodash";
 
-import utility from "@thedolphinos/utility4js";
-
-import {isExist} from "@thedolphinos/utility4js";
+import {isExist, isInitialized, isValidEnumValue} from "@thedolphinos/utility4js";
 
 /**
  * Validates.
@@ -115,12 +113,12 @@ class Validator
             const routeDefinition = routesDefinitions[routeName];
             const {isEnabled, allowedPropertiesForRequestElements} = routeDefinition;
 
-            if (utility.isExist(isEnabled) && !_.isBoolean(isEnabled))
+            if (isExist(isEnabled) && !_.isBoolean(isEnabled))
             {
                 return false;
             }
 
-            if (utility.isExist(allowedPropertiesForRequestElements) && !Validator.isValidParameterAllowedPropertiesForRequestElements(allowedPropertiesForRequestElements))
+            if (isExist(allowedPropertiesForRequestElements) && !Validator.isValidParameterAllowedPropertiesForRequestElements(allowedPropertiesForRequestElements))
             {
                 return false;
             }
@@ -152,7 +150,7 @@ class Validator
                 {
                     const allowedProperties = allowedPropertiesForRequestElements[requestElement];
 
-                    if (utility.isExist(allowedProperties) && !Validator.isValidParameterAllowedProperties(allowedProperties))
+                    if (isExist(allowedProperties) && !Validator.isValidParameterAllowedProperties(allowedProperties))
                     {
                         return false;
                     }
@@ -163,7 +161,7 @@ class Validator
                 {
                     const propertyDefinition = allowedPropertiesForRequestElements[requestElement];
 
-                    if (utility.isExist(propertyDefinition) && !Validator.isValidParameterPropertyDefinition(propertyDefinition))
+                    if (isExist(propertyDefinition) && !Validator.isValidParameterPropertyDefinition(propertyDefinition))
                     {
                         return false;
                     }
@@ -200,7 +198,7 @@ class Validator
                     return false;
                 }
 
-                if (utility.isInitialized(allowedProperties[type]))
+                if (isInitialized(allowedProperties[type]))
                 {
                     isAtLeastOneTypeIsInitialized = true;
 
@@ -247,7 +245,7 @@ class Validator
         if (isString)
         {
             // property definition is data type.
-            return utility.isValidEnumValue(propertyDefinition, {
+            return isValidEnumValue(propertyDefinition, {
                 "Boolean": "Boolean",
                 "Integer": "Integer",
                 "Float": "Float",
