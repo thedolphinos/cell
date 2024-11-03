@@ -7,7 +7,7 @@
 
 import _ from "lodash";
 import {ClientSession, Document} from "mongodb";
-import mongoDotNotation from "mongo-dot-notation";
+import {flatten, $unset} from "mongo-dot-notation";
 
 import {isExist, init} from "@thedolphinos/utility4js";
 import {InvalidArgumentsError} from "@thedolphinos/error4js";
@@ -319,8 +319,8 @@ class DbService extends Service
      */
     private adaptQueryToRead (query: any): any
     {
-        let convertedQuery: any = mongoDotNotation.flatten(query);
-        convertedQuery = isExist(convertedQuery.$set) ? convertedQuery.$set : {}; // This comes from `mongoDotNotation.flatten`.
+        let convertedQuery: any = flatten(query);
+        convertedQuery = isExist(convertedQuery.$set) ? convertedQuery.$set : {}; // This comes from `flatten`.
 
         for (const key in convertedQuery)
         {
@@ -343,18 +343,18 @@ class DbService extends Service
      */
     private adaptDocumentCandidateToUpdate (documentCandidate: any): any
     {
-        let convertedDocumentCandidate: any = mongoDotNotation.flatten(documentCandidate);
-        convertedDocumentCandidate = convertedDocumentCandidate.$set; // This comes from `mongoDotNotation.flatten`.
+        let convertedDocumentCandidate: any = flatten(documentCandidate);
+        convertedDocumentCandidate = convertedDocumentCandidate.$set; // This comes from `flatten`.
 
         for (const key in convertedDocumentCandidate)
         {
             if (!isExist(convertedDocumentCandidate[key])) // Means the field is sent for deletion.
             {
-                convertedDocumentCandidate[key] = mongoDotNotation.$unset();
+                convertedDocumentCandidate[key] = $unset();
             }
         }
 
-        return mongoDotNotation.flatten(convertedDocumentCandidate);
+        return flatten(convertedDocumentCandidate);
     }
 
     /**

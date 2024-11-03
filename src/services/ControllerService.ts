@@ -10,7 +10,7 @@ import {ClientSession, ObjectId, Document} from "mongodb";
 
 import {isExist, isInitialized, init} from "@thedolphinos/utility4js";
 import {InvalidArgumentsError, BadRequestError} from "@thedolphinos/error4js";
-import mongoDotNotation from "mongo-dot-notation";
+import {flatten} from "mongo-dot-notation";
 
 import ErrorSafe from "../safes/ErrorSafe";
 import LanguageSafe from "../safes/LanguageSafe";
@@ -170,7 +170,7 @@ class ControllerService extends Service
             async () =>
             {
                 isExist(hooks.before) ? await hooks.before(query, options, session) : undefined;
-                let convertedQuery: any = mongoDotNotation.flatten(query);
+                let convertedQuery: any = flatten(query);
                 convertedQuery = isExist(convertedQuery.$set) ? convertedQuery.$set : {};
                 documents = await this.applicationService.dbService.dbOperation.read(convertedQuery, {...options, session});
                 count = await this.applicationService.dbService.dbOperation.count(query, {...options, session});
