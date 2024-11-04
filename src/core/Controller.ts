@@ -488,7 +488,7 @@ class Controller
         if (isConvertToInternalServerError)
         {
             error = new InternalServerError(ErrorSafe.getData().HTTP_11);
-            errorType = "InternalServerError";
+            errorType = error.type;
         }
 
         if (errorType !== "InternalServerError")
