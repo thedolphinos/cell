@@ -435,7 +435,7 @@ class Controller
     {
         try
         {
-            const httpError = this.toHTTPError(error);
+            const httpError = this.toHttpError(error);
             const {statusCode, code, message} = httpError;
 
             response.status(statusCode).json({code, message});
@@ -458,23 +458,23 @@ class Controller
         }
     }
 
-    private toHTTPError (error: any)
+    private toHttpError (error: any)
     {
         let isConvertToInternalServerError = false;
 
-        const errorClassName = error.constructor.name; // This is used since Node's duplicate module imports causes reference problems during instanceof checks.
+        let errorType: string = error?.type || error.constructor.name; // This is used since Node's duplicate module imports causes reference problems during instanceof checks.
 
-        if (errorClassName !== "DeveloperError" &&
-            errorClassName !== "DbError" &&
-            errorClassName !== "MongoError" &&
-            errorClassName !== "HTTPError")
+        if (errorType !== "DeveloperError" &&
+            errorType !== "DbError" &&
+            errorType !== "MongoError" &&
+            errorType !== "HttpError")
         {
             isConvertToInternalServerError = true;
             Logger.warn(`Internal server error occurred!\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
             console.error(error);
         }
 
-        if (errorClassName === "HTTPError" &&
+        if (errorType === "HttpError" &&
             // @ts-ignore
             !Controller.VALID_HTTP_STATUS_CODES.CLIENT_ERROR.includes(error.statusCode) && // TODO: fix this in error4js by making this field mandatory
             // @ts-ignore
@@ -488,23 +488,24 @@ class Controller
         if (isConvertToInternalServerError)
         {
             error = new InternalServerError(ErrorSafe.getData().HTTP_11);
+            errorType = "InternalServerError";
         }
 
-        if (errorClassName !== "InternalServerError")
+        if (errorType !== "InternalServerError")
         {
-            if (errorClassName === "DeveloperError")
+            if (errorType === "DeveloperError")
             {
                 Logger.warn(`Developer error is occurred!\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
                 console.error(error);
                 error = new InternalServerError(ErrorSafe.getData().HTTP_11);
             }
-            else if (errorClassName === "DbError")
+            else if (errorType === "DbError")
             {
                 Logger.warn(`Database level error is occurred!\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
                 console.error(error);
                 error = new ClientError(ErrorSafe.getData().RESOURCE_NOT_FOUND);
             }
-            else if (errorClassName === "MongoError")
+            else if (errorType === "MongoError")
             {
                 Logger.warn(`MongoDB level error is occurred!\nCode: ${error.code}\nMessage: ${error.message}\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
                 console.error(error);
@@ -518,7 +519,7 @@ class Controller
                     error = new InternalServerError(ErrorSafe.getData().HTTP_11);
                 }
             }
-            else if (errorClassName === "HTTPError")
+            else if (errorType === "HttpError")
             {
                 Logger.warn(`HTTP error is given!\n${isExist(error.toString) ? error.toString() : JSON.stringify(error)}`, 9);
                 console.error(error);
