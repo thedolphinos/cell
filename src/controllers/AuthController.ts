@@ -417,6 +417,7 @@ class AuthController extends Controller
                             {
                                 auth: {
                                     isActive: false,
+                                    activationLink,
                                     activationCode
                                 }
                             },
@@ -495,10 +496,13 @@ class AuthController extends Controller
                 throw new BadRequestError();
             }
 
-            if (!isExist(tokenPayload) ||
+            // TODO: Give separate errors.
+            if (account.isActive ||
+                !isExist(tokenPayload) ||
                 !isExist(tokenPayload.activationCode) ||
                 tokenPayload.activationCode !== account.auth.activationCode ||
-                activationCode !== account.auth.activationCode)
+                activationCode !== account.auth.activationCode ||
+                activationLink !== account.auth.activationLink)
             {
                 throw new BadRequestError(ErrorSafe.getData().ACTIVATION_CODE_INVALID);
             }
@@ -517,6 +521,7 @@ class AuthController extends Controller
                         {
                             auth: {
                                 isActive: true,
+                                activationLink: null,
                                 activationCode: null
                             }
                         },
