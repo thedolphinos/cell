@@ -1,6 +1,4 @@
-import _, {keys} from "lodash";
-
-import {MongoError} from "mongodb";
+import _ from "lodash";
 
 import Logger from "./Logger";
 import Validator from "../helpers/Validator";
@@ -416,11 +414,21 @@ class Controller
 
         if (isExist(response?.locals?.authorizationBundle))
         {
-            responseData.token = response.locals.authorizationBundle;
+            if (!isExist(responseData.auth))
+            {
+                responseData.auth = {};
+            }
+
+            responseData.auth.token = response.locals.authorizationBundle;
         }
         if (isExist(response?.locals?.publicKey))
         {
-            responseData.key = response.locals.publicKey;
+            if (!isExist(responseData.auth))
+            {
+                responseData.auth = {};
+            }
+
+            responseData.auth.key = response.locals.publicKey;
         }
 
         if (!isInitialized(responseData))
