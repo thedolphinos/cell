@@ -900,7 +900,7 @@ class AuthController extends Controller
         const token = this.decrypt(authorizationBundle.token, account.encryption.aes.key, account.encryption.aes.iv);
 
         // 4)
-        const tokenPayload: any = JSON.parse(<string>jwt.verify(token, tokenPrivateKey));
+        const tokenPayload: any = jwt.verify(token, tokenPrivateKey);
 
         // 5)
         if (!isSameIds(authorizationBundle._account, tokenPayload._account))
