@@ -191,11 +191,6 @@ class AuthController extends Controller
     {
         try
         {
-            // if (isExist(allowedPropertiesForHeaders) && !Validator.isValidParameterAllowedPropertiesForRequestElements({headers: allowedPropertiesForHeaders}))
-            // {
-            //     throw new InvalidArgumentsError(ErrorSafe.getData().DEV_1);
-            // } TODO
-
             hooks = init(hooks, {});
             hooks.bearer = init(hooks.bearer, {});
 
@@ -227,11 +222,6 @@ class AuthController extends Controller
     {
         try
         {
-            if (isExist(allowedPropertiesForHeaders) && !Validator.isValidParameterAllowedPropertiesForRequestElements({headers: allowedPropertiesForHeaders}))
-            {
-                throw new InvalidArgumentsError(ErrorSafe.getData().DEV_1);
-            }
-
             hooks = init(hooks, {});
             hooks.bearer = init(hooks.bearer, {});
 
@@ -672,7 +662,6 @@ class AuthController extends Controller
 
             let encryptedAuthorizationBundle: string;
             let account: Document;
-            let tokenPayload: any;
 
             try
             {
@@ -710,13 +699,13 @@ class AuthController extends Controller
             }
 
             // Check if the account is inactive (when activation is enabled).
-            if (this.isActivationEnabled && !accountRelatedToPublicKey.auth.isActive)
+            if (this.isActivationEnabled && !account.auth.isActive)
             {
                 throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_INACTIVE);
             }
 
             // Check if the account is blocked.
-            if (accountRelatedToPublicKey.auth.isBlocked)
+            if (account.auth.isBlocked)
             {
                 throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_BLOCKED);
             }
