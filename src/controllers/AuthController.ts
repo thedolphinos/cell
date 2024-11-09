@@ -184,9 +184,6 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * This does not contain any logic. Hooks should be used to place logic.
-     */
     public async verifyPublic (request: any, response: any, next?: any, hooks ?: VerifyPublicHooks, allowedPropertiesForHeaders?: AllowedProperties | SpecialAllowedPropertyAll): Promise<void>
     {
         try
@@ -206,19 +203,7 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * Client must send `authorization` property in the header.
-     *
-     * Verifies private requests (which are closed to public and must be authorized and authenticated) using the authorization header.
-     * Token must be sent using the authorization header must be sent.
-     * Gets the cipher authorization bundle from the authorization header.
-     * Decrypts and decodes it.
-     * Retrieves the related account and checks if it exists, active (if activation is enabled), and not blocked.
-     * Encodes and encrypts a new authorization bundle.
-     * Puts it under locals ((http://expressjs.com/en/5x/api.html#res.locals)).
-     *
-     */
-    public async verifyPrivate (request: any, response: any, next?: any, hooks?: VerifyPrivateHooks, allowedPropertiesForHeaders?: AllowedProperties): Promise<void>
+    public async verifyPrivate (request: any, response: any, next: any, hooks?: VerifyPrivateHooks, allowedPropertiesForHeaders?: AllowedProperties): Promise<void>
     {
         try
         {
@@ -229,21 +214,40 @@ class AuthController extends Controller
 
             isExist(hooks.headers) ? await hooks.headers(headers) : undefined;
 
-            if (!isExist(response.locals))
-            {
-                response.locals = {};
-            }
-
             if (!isExist(headers.authorization))
             {
                 throw new UnauthorizedError(ErrorSafe.getData().AUTHORIZATION_HEADER_MISSING);
             }
 
-            let account;
+            const {token: encryptedToken, key: publicKey} = JSON.parse(headers.authorization);
+
+            const accountRelatedToPublicKey: Document = await this.applicationService.readOne({encryption: {rsa: {publicKey}}});
+
+            if (!isExist(accountRelatedToPublicKey))
+            {
+                throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
+            }
+
+            let encryptedAuthorizationBundle: string;
+            let account: Document;
 
             try
             {
-                const result = await this.decryptAndDecodeAuthorizationBundle(headers.authorization, this.tokenPrivateKey);
+                const privateKey = crypto.createPrivateKey({key: accountRelatedToPublicKey.encryption.rsa.privateKey, passphrase: this.encryptionPassphrase})
+                                         .export({type: "pkcs8", format: "pem"})
+                                         .toString("hex");
+                const cipher = new NodeRSA(privateKey);
+
+                encryptedAuthorizationBundle = cipher.decrypt(encryptedToken).toString();
+            }
+            catch
+            {
+                throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
+            }
+
+            try
+            {
+                const result = await this.decryptAndDecodeAuthorizationBundle(encryptedAuthorizationBundle, this.tokenPrivateKey);
                 account = result.account;
             }
             catch (error: any)
@@ -256,19 +260,19 @@ class AuthController extends Controller
                 throw new InvalidTokenError(ErrorSafe.getData().HTTP_222);
             }
 
-            // check if the account exists.
-            if (!isExist(account))
+            // Check if the account related to the sent public key is the same as the account related to the token.
+            if (!isSameIds(accountRelatedToPublicKey._id, account._id))
             {
-                throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
+                throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_INACTIVE);
             }
 
-            // check if the account is inactive (if activation is enabled).
+            // Check if the account is inactive (when activation is enabled).
             if (this.isActivationEnabled && !account.auth.isActive)
             {
                 throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_INACTIVE);
             }
 
-            // check if the account is blocked.
+            // Check if the account is blocked.
             if (account.auth.isBlocked)
             {
                 throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_BLOCKED);
@@ -278,17 +282,10 @@ class AuthController extends Controller
             response.locals.authorizationBundle = await this.generateEncryptedAuthorizationBundle(account, {}, this.tokenPrivateKey, this.tokenLifetime);
             response.locals.publicKey = account.encryption.rsa.publicKey;
 
-            if (isExist(next))
-            {
-                next();
-            }
-            else
-            {
-                const data = {};
-                isExist(hooks.data) ? await hooks.data(data, account) : undefined;
+            const data = {};
+            isExist(hooks.data) ? await hooks.data(data, account) : undefined;
 
-                await this.sendResponse(request, response, 200, data);
-            }
+            next();
         }
         catch (error)
         {
@@ -710,9 +707,8 @@ class AuthController extends Controller
                 throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_BLOCKED);
             }
 
-            response.locals.account = account;
-            response.locals.authorizationBundle = await this.generateEncryptedAuthorizationBundle(accountRelatedToPublicKey, {}, this.tokenPrivateKey, this.tokenLifetime);
-            response.locals.publicKey = accountRelatedToPublicKey.encryption.rsa.publicKey;
+            response.locals.authorizationBundle = await this.generateEncryptedAuthorizationBundle(account, {}, this.tokenPrivateKey, this.tokenLifetime);
+            response.locals.publicKey = account.encryption.rsa.publicKey;
 
             const data = {};
             isExist(hooks.data) ? await hooks.data(data, account) : undefined;
