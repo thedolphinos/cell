@@ -693,7 +693,7 @@ class AuthController extends Controller
             }
 
             // Check if the account related to the sent public key is the same as the account related to the token.
-            if (isSameIds(accountRelatedToPublicKey._id, account._id))
+            if (!isSameIds(accountRelatedToPublicKey._id, account._id))
             {
                 throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_INACTIVE);
             }
