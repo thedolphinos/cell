@@ -9,12 +9,11 @@ import NodeRSA from "node-rsa";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import Validator from "../helpers/Validator";
 import ErrorSafe from "../safes/ErrorSafe";
 import SessionManager from "../db/SessionManager";
 import ApplicationService from "../services/ApplicationService";
 import Controller from "../core/Controller";
-import {AllowedPropertiesForRequestElements, AllowedProperties, SpecialAllowedPropertyAll} from "../core/Router";
+import {AllowedPropertiesForRequestElements} from "../core/Router";
 
 export interface Options
 {
@@ -30,19 +29,6 @@ export interface Options
     isActivationEnabled: boolean;
     activationLinkPrivateKey?: string; // Required when `isActivationEnabled` is true.
     activationLinkLifeTime?: number; // Required when `isActivationEnabled` is true.
-}
-
-export interface VerifyPublicHooks
-{
-    bearer?: any;
-    headers?: (headers: any) => Promise<void>;
-}
-
-export interface VerifyPrivateHooks
-{
-    bearer?: any;
-    headers?: (headers: any) => Promise<void>;
-    data?: (data: any, account: Document) => Promise<void>;
 }
 
 export interface RegisterHooks
@@ -80,8 +66,8 @@ export interface LoginHooks
 
 export interface AuthorizeHooks
 {
-    body?: (body: any) => Promise<void>;
-    data?: (data: any, account: Document) => Promise<void>;
+    bearer?: any;
+    isRespond?: boolean;
 }
 
 export interface ChangePasswordHooks
@@ -184,113 +170,72 @@ class AuthController extends Controller
         }
     }
 
-    public async verifyPublic (request: any, response: any, next?: any, hooks ?: VerifyPublicHooks, allowedPropertiesForHeaders?: AllowedProperties | SpecialAllowedPropertyAll): Promise<void>
+    public async verify (encryptedToken: string, publicKey: string): Promise<{account: Document, authorizationBundle: string}>
     {
+        const accountRelatedToPublicKey: Document = await this.applicationService.readOne({encryption: {rsa: {publicKey}}});
+
+        if (!isExist(accountRelatedToPublicKey))
+        {
+            throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
+        }
+
+        let encryptedAuthorizationBundle: string;
+        let account: Document;
+        let authorizationBundle: string;
+
         try
         {
-            hooks = init(hooks, {});
-            hooks.bearer = init(hooks.bearer, {});
+            const privateKey = crypto.createPrivateKey({key: accountRelatedToPublicKey.encryption.rsa.privateKey, passphrase: this.encryptionPassphrase})
+                                     .export({type: "pkcs8", format: "pem"})
+                                     .toString("hex");
+            const cipher = new NodeRSA(privateKey);
 
-            const headers = AuthController.extractAndAuthorizeHeaders(request, allowedPropertiesForHeaders);
-
-            isExist(hooks.headers) ? await hooks.headers(headers) : undefined;
-
-            next();
+            encryptedAuthorizationBundle = cipher.decrypt(encryptedToken).toString();
         }
-        catch (error)
+        catch
         {
-            this.sendResponseWhenError(response, error);
+            throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
         }
-    }
 
-    public async verifyPrivate (request: any, response: any, next: any, hooks?: VerifyPrivateHooks, allowedPropertiesForHeaders?: AllowedProperties): Promise<void>
-    {
         try
         {
-            hooks = init(hooks, {});
-            hooks.bearer = init(hooks.bearer, {});
-
-            const headers = AuthController.extractAndAuthorizeHeaders(request, allowedPropertiesForHeaders, true);
-
-            isExist(hooks.headers) ? await hooks.headers(headers) : undefined;
-
-            if (!isExist(headers.authorization))
-            {
-                throw new UnauthorizedError(ErrorSafe.getData().AUTHORIZATION_HEADER_MISSING);
-            }
-
-            const {token: encryptedToken, key: publicKey} = JSON.parse(headers.authorization);
-
-            const accountRelatedToPublicKey: Document = await this.applicationService.readOne({encryption: {rsa: {publicKey}}});
-
-            if (!isExist(accountRelatedToPublicKey))
-            {
-                throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
-            }
-
-            let encryptedAuthorizationBundle: string;
-            let account: Document;
-
-            try
-            {
-                const privateKey = crypto.createPrivateKey({key: accountRelatedToPublicKey.encryption.rsa.privateKey, passphrase: this.encryptionPassphrase})
-                                         .export({type: "pkcs8", format: "pem"})
-                                         .toString("hex");
-                const cipher = new NodeRSA(privateKey);
-
-                encryptedAuthorizationBundle = cipher.decrypt(encryptedToken).toString();
-            }
-            catch
-            {
-                throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
-            }
-
-            try
-            {
-                const result = await this.decryptAndDecodeAuthorizationBundle(encryptedAuthorizationBundle, this.tokenPrivateKey);
-                account = result.account;
-            }
-            catch (error: any)
-            {
-                if (error.name === "TokenExpiredError")
-                {
-                    throw new TokenExpiredError(ErrorSafe.getData().HTTP_223);
-                }
-
-                throw new InvalidTokenError(ErrorSafe.getData().HTTP_222);
-            }
-
-            // Check if the account related to the sent public key is the same as the account related to the token.
-            if (!isSameIds(accountRelatedToPublicKey._id, account._id))
-            {
-                throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_INACTIVE);
-            }
-
-            // Check if the account is inactive (when activation is enabled).
-            if (this.isActivationEnabled && !account.auth.isActive)
-            {
-                throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_INACTIVE);
-            }
-
-            // Check if the account is blocked.
-            if (account.auth.isBlocked)
-            {
-                throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_BLOCKED);
-            }
-
-            response.locals.account = account;
-            response.locals.authorizationBundle = await this.generateEncryptedAuthorizationBundle(account, {}, this.tokenPrivateKey, this.tokenLifetime);
-            response.locals.publicKey = account.encryption.rsa.publicKey;
-
-            const data = {};
-            isExist(hooks.data) ? await hooks.data(data, account) : undefined;
-
-            next();
+            const result = await this.decryptAndDecodeAuthorizationBundle(encryptedAuthorizationBundle, this.tokenPrivateKey);
+            account = result.account;
         }
-        catch (error)
+        catch (error: any)
         {
-            this.sendResponseWhenError(response, error);
+            if (error.name === "TokenExpiredError")
+            {
+                throw new TokenExpiredError(ErrorSafe.getData().HTTP_223);
+            }
+
+            throw new InvalidTokenError(ErrorSafe.getData().HTTP_222);
         }
+
+        // Check if the account related to the sent public key is the same as the account related to the token.
+        if (!isSameIds(accountRelatedToPublicKey._id, account._id))
+        {
+            throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_INACTIVE);
+        }
+
+        // Check if the account is inactive (when activation is enabled).
+        if (this.isActivationEnabled && !account.auth.isActive)
+        {
+            throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_INACTIVE);
+        }
+
+        // Check if the account is blocked.
+        if (account.auth.isBlocked)
+        {
+            throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_BLOCKED);
+        }
+
+        authorizationBundle = await this.generateEncryptedAuthorizationBundle(account, {}, this.tokenPrivateKey, this.tokenLifetime);
+
+        return {
+            account,
+            authorizationBundle
+        };
     }
 
     public async register (request: any, response: any, next?: any, hooks: RegisterHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
@@ -299,10 +244,7 @@ class AuthController extends Controller
         {
             hooks.bearer = init(hooks.bearer, {});
 
-            AuthController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-            AuthController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-            AuthController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-            const body = AuthController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+            const {body} = AuthController.extractAndAuthorize(request, allowedPropertiesForRequestElements, {headers: false, pathParameters: false, queryString: false, body: true});
 
             isExist(hooks.body) ? await hooks.body(body) : undefined;
 
@@ -440,16 +382,13 @@ class AuthController extends Controller
         }
     }
 
-    async activate (request: any, response: any, next?: any, hooks: ActivateHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async activate (request: any, response: any, next?: any, hooks: ActivateHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
     {
         try
         {
             hooks.bearer = init(hooks.bearer, {});
 
-            AuthController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-            AuthController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-            AuthController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-            const body = AuthController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+            const {body} = AuthController.extractAndAuthorize(request, allowedPropertiesForRequestElements, {headers: false, pathParameters: false, queryString: false, body: true});
 
             isExist(hooks.body) ? await hooks.body(body) : undefined;
 
@@ -541,10 +480,7 @@ class AuthController extends Controller
         {
             hooks.bearer = init(hooks.bearer, {});
 
-            AuthController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-            AuthController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-            AuthController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-            const body = AuthController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+            const {body} = AuthController.extractAndAuthorize(request, allowedPropertiesForRequestElements, {headers: false, pathParameters: false, queryString: false, body: true});
 
             isExist(hooks.body) ? await hooks.body(body) : undefined;
 
@@ -637,83 +573,35 @@ class AuthController extends Controller
         }
     }
 
-    async authorize (request: any, response: any, next?: any, hooks: AuthorizeHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async authorize (request: any, response: any, next: any, hooks: AuthorizeHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
     {
         try
         {
-            AuthController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-            AuthController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-            AuthController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-            const body = AuthController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+            hooks.bearer = init(hooks.bearer, {});
 
-            isExist(hooks.body) ? await hooks.body(body) : undefined;
+            const {headers} = AuthController.extractAndAuthorize(request, allowedPropertiesForRequestElements, {headers: true, pathParameters: false, queryString: false, body: false});
 
-            const {token: encryptedToken, key: publicKey} = body;
-
-            const accountRelatedToPublicKey: Document = await this.applicationService.readOne({encryption: {rsa: {publicKey}}});
-
-            if (!isExist(accountRelatedToPublicKey))
+            if (!isExist(headers.authorization))
             {
-                throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
+                throw new UnauthorizedError(ErrorSafe.getData().AUTHORIZATION_HEADER_MISSING);
             }
 
-            let encryptedAuthorizationBundle: string;
-            let account: Document;
+            const {token: encryptedToken, key: publicKey} = JSON.parse(headers.authorization);
 
-            try
-            {
-                const privateKey = crypto.createPrivateKey({key: accountRelatedToPublicKey.encryption.rsa.privateKey, passphrase: this.encryptionPassphrase})
-                                         .export({type: "pkcs8", format: "pem"})
-                                         .toString("hex");
-                const cipher = new NodeRSA(privateKey);
+            const {account, authorizationBundle} = await this.verify(encryptedToken, publicKey);
 
-                encryptedAuthorizationBundle = cipher.decrypt(encryptedToken).toString();
-            }
-            catch
-            {
-                throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
-            }
-
-            try
-            {
-                const result = await this.decryptAndDecodeAuthorizationBundle(encryptedAuthorizationBundle, this.tokenPrivateKey);
-                account = result.account;
-            }
-            catch (error: any)
-            {
-                if (error.name === "TokenExpiredError")
-                {
-                    throw new TokenExpiredError(ErrorSafe.getData().HTTP_223);
-                }
-
-                throw new InvalidTokenError(ErrorSafe.getData().HTTP_222);
-            }
-
-            // Check if the account related to the sent public key is the same as the account related to the token.
-            if (!isSameIds(accountRelatedToPublicKey._id, account._id))
-            {
-                throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_INACTIVE);
-            }
-
-            // Check if the account is inactive (when activation is enabled).
-            if (this.isActivationEnabled && !account.auth.isActive)
-            {
-                throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_INACTIVE);
-            }
-
-            // Check if the account is blocked.
-            if (account.auth.isBlocked)
-            {
-                throw new ForbiddenError(ErrorSafe.getData().ACCOUNT_BLOCKED);
-            }
-
-            response.locals.authorizationBundle = await this.generateEncryptedAuthorizationBundle(account, {}, this.tokenPrivateKey, this.tokenLifetime);
+            response.locals.account = account;
+            response.locals.authorizationBundle = authorizationBundle;
             response.locals.publicKey = account.encryption.rsa.publicKey;
 
-            const data = {};
-            isExist(hooks.data) ? await hooks.data(data, account) : undefined;
-
-            await this.sendResponse(request, response, 200, data);
+            if (hooks.isRespond)
+            {
+                await this.sendResponse(request, response, 200);
+            }
+            else
+            {
+                next();
+            }
         }
         catch (error)
         {
@@ -721,7 +609,7 @@ class AuthController extends Controller
         }
     }
 
-    async changePassword (request: any, response: any, next?: any, hooks: ChangePasswordHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async changePassword (request: any, response: any, next?: any, hooks: ChangePasswordHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
     {
         try
         {

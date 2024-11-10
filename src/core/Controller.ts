@@ -7,7 +7,7 @@ import DataType from "./DataType.json";
 
 import {isExist, isInitialized, isValidNumber, isValidDate, isValidId} from "@thedolphinos/utility4js";
 import {InvalidArgumentsError, ClientError, InternalServerError, BadRequestError, ForbiddenError, HeadersMissingError, PathParametersMissingError, QueryStringMissingError, BodyMissingError, RequiredPropertiesMissingError} from "@thedolphinos/error4js";
-import {AllowedProperties, PropertyDefinition, SpecialAllowedPropertyAll} from "./Router";
+import {AllowedProperties, PropertyDefinition, SpecialAllowedPropertyAll, AllowedPropertiesForRequestElements} from "./Router";
 
 class Controller
 {
@@ -40,6 +40,21 @@ class Controller
         CLIENT_ERROR: [400, 401, 402, 403, 404, 405, 406, 407, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 422, 425, 426, 428, 429, 431, 451],
         SERVER_ERROR: [500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511]
     };
+
+    protected static extractAndAuthorize (request: any, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements, isRequiredForRequestElements?: {headers: boolean, pathParameters: boolean, queryString: boolean, body: boolean}): {headers: any, pathParameters: any, queryString: any, body: any}
+    {
+        const headers = Controller.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, isRequiredForRequestElements.headers);
+        const pathParameters = Controller.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, isRequiredForRequestElements.pathParameters);
+        const queryString = Controller.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, isRequiredForRequestElements.queryString);
+        const body = Controller.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, isRequiredForRequestElements.body);
+
+        return {
+            headers,
+            pathParameters,
+            queryString,
+            body
+        };
+    }
 
     protected static extractAndAuthorizeHeaders (request: any, allowedProperties: AllowedProperties | SpecialAllowedPropertyAll, isRequired: boolean = false): any
     {
