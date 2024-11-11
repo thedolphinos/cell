@@ -43,7 +43,7 @@ export interface QueryStringControlDefinition
 export interface BodyControlDefinition
 {
     status: Status;
-    propertyDefinition: PropertyDefinition;
+    propertyDefinition?: PropertyDefinition; // This is optional if `status` is `optional`, not used if `status` is `forbidden`.
 }
 
 export interface RequestElementsControlDefinitions
