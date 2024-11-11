@@ -61,10 +61,16 @@ class Controller
                 }
 
                 Controller.authorizePropertiesForAllowedProperties("headers", headers, headerControlDefinition.allowedProperties);
+
                 break;
             }
             case "optional":
             {
+                if (isExist(headerControlDefinition.allowedProperties))
+                {
+                    Controller.authorizePropertiesForAllowedProperties("headers", headers, headerControlDefinition.allowedProperties);
+                }
+
                 break;
             }
             case "forbidden":
@@ -98,10 +104,16 @@ class Controller
                 }
 
                 Controller.authorizePropertiesForAllowedProperties("path parameters", pathParameters, pathParametersControlDefinition.allowedProperties);
+
                 break;
             }
             case "optional":
             {
+                if (isExist(pathParametersControlDefinition.allowedProperties))
+                {
+                    Controller.authorizePropertiesForAllowedProperties("path parameters", pathParameters, pathParametersControlDefinition.allowedProperties);
+                }
+
                 break;
             }
             case "forbidden":
@@ -135,10 +147,16 @@ class Controller
                 }
 
                 Controller.authorizePropertiesForAllowedProperties("query string", query, queryStringControlDefinition.allowedProperties);
+
                 break;
             }
             case "optional":
             {
+                if (isExist(queryStringControlDefinition.allowedProperties))
+                {
+                    Controller.authorizePropertiesForAllowedProperties("query string", query, queryStringControlDefinition.allowedProperties);
+                }
+
                 break;
             }
             case "forbidden":
@@ -172,10 +190,16 @@ class Controller
                 }
 
                 Controller.authorizePropertiesForPropertyDefinition("", body, bodyControlDefinition.propertyDefinition);
+
                 break;
             }
             case "optional":
             {
+                if (isExist(bodyControlDefinition.propertyDefinition))
+                {
+                    Controller.authorizePropertiesForPropertyDefinition("", body, bodyControlDefinition.propertyDefinition);
+                }
+
                 break;
             }
             case "forbidden":

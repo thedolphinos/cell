@@ -25,19 +25,19 @@ export interface PropertyDefinition
 export interface HeadersControlDefinition
 {
     status: Status;
-    allowedProperties: AllowedProperties | SpecialAllowedPropertyAll;
+    allowedProperties?: AllowedProperties | SpecialAllowedPropertyAll; // This is optional if `status` is `optional`, not used if `status` is `forbidden`.
 }
 
 export interface PathParametersControlDefinition
 {
     status: Status;
-    allowedProperties: AllowedProperties | SpecialAllowedPropertyAll;
+    allowedProperties?: AllowedProperties | SpecialAllowedPropertyAll; // This is optional if `status` is `optional`, not used if `status` is `forbidden`.
 }
 
 export interface QueryStringControlDefinition
 {
     status: Status;
-    allowedProperties: AllowedProperties | SpecialAllowedPropertyAll;
+    allowedProperties?: AllowedProperties | SpecialAllowedPropertyAll; // This is optional if `status` is `optional`, not used if `status` is `forbidden`.
 }
 
 export interface BodyControlDefinition
