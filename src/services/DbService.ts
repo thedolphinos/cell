@@ -24,10 +24,10 @@ import Service from "../core/Service";
  * Uses a DB operation to communicate with MongoDB. The DB operation is either provided or created from a provided schema.
  */
 
-export interface Options
+export interface Options<S extends Schema = Schema, DBO extends DbOperation<S> = DbOperation<S>>
 {
-    schema?: Schema;
-    dbOperation?: DbOperation;
+    schema?: S;
+    dbOperation?: DBO;
     persona?: string;
 }
 
@@ -102,17 +102,17 @@ export interface DeleteOneHooks
     isSessionEnabled?: boolean;
 }
 
-class DbService extends Service
+class DbService<S extends Schema = Schema, DBO extends DbOperation<S> = DbOperation<S>> extends Service
 {
-    public readonly dbOperation: DbOperation;
+    public readonly dbOperation: DBO;
 
-    constructor (options: Options)
+    constructor (options: Options<S, DBO>)
     {
         super(Service.LAYER.DB, options.persona);
 
         if (isExist(options.schema) && !isExist(options.dbOperation))
         {
-            this.dbOperation = new DbOperation(options.schema);
+            this.dbOperation = new DbOperation(options.schema) as DBO;
         }
         else if (!isExist(options.schema) && isExist(options.dbOperation))
         {

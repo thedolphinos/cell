@@ -23,11 +23,11 @@ import DbService from "../services/DbService";
  * Uses a DB service to communicate with MongoDB. The DB service is either provided or created from a provided schema or DB operation.
  */
 
-export interface Options
+export interface Options<S extends Schema = Schema, DBO extends DbOperation<S> = DbOperation<S>, DBS extends DbService<S, DBO> = DbService<S, DBO>>
 {
-    schema?: Schema;
-    dbOperation?: DbOperation;
-    dbService?: DbService;
+    schema?: S;
+    dbOperation?: DBO;
+    dbService?: DBS;
     persona?: string;
     raiseDocumentExistenceErrors?: boolean;
 }
@@ -102,23 +102,23 @@ export interface DeleteOneHooks
     isSessionEnabled?: boolean;
 }
 
-class ApplicationService extends Service
+class ApplicationService<S extends Schema = Schema, DBO extends DbOperation<S> = DbOperation<S>, DBS extends DbService<S, DBO> = DbService<S, DBO>> extends Service
 {
-    public readonly dbService: DbService;
-    private readonly rootDbService?: DbService;
+    public readonly dbService: DBS;
+    private readonly rootDbService?: DBS;
     private readonly raiseDocumentExistenceErrors: boolean;
 
-    constructor (options: Options)
+    constructor (options: Options<S, DBO, DBS>)
     {
         super(Service.LAYER.APPLICATION, options.persona);
 
         if (isExist(options.schema) && !isExist(options.dbOperation) && !isExist(options.dbService))
         {
-            this.dbService = new DbService({schema: options.schema, persona: options.persona});
+            this.dbService = new DbService({schema: options.schema, persona: options.persona}) as DBS;
         }
         else if (!isExist(options.schema) && isExist(options.dbOperation) && !isExist(options.dbService))
         {
-            this.dbService = new DbService({dbOperation: options.dbOperation, persona: options.persona});
+            this.dbService = new DbService({dbOperation: options.dbOperation, persona: options.persona}) as DBS;
         }
         else if (!isExist(options.schema) && !isExist(options.dbOperation) && isExist(options.dbService))
         {
@@ -131,7 +131,7 @@ class ApplicationService extends Service
 
         if (this.dbService.dbOperation.schema.isHistoryEnabled)
         {
-            this.rootDbService = new DbService({schema: this.dbService.dbOperation.schema.rootSchema});
+            this.rootDbService = new DbService({schema: this.dbService.dbOperation.schema.rootSchema}) as DBS;
         }
 
         this.raiseDocumentExistenceErrors = init(options.raiseDocumentExistenceErrors, false);

@@ -109,11 +109,11 @@ export interface ChangePasswordHooks
  * }
  */
 
-class AuthController extends Controller
+class AuthController<AS extends ApplicationService = ApplicationService> extends Controller
 {
     private static readonly ENCRYPTION_ALGORITHM = "aes-256-cbc";
 
-    protected readonly applicationService: ApplicationService;
+    protected readonly applicationService: AS;
 
     private readonly propertyNameOfUserIdentifier: string; // The property name of the unique identifier of an account, such as username or e-mail. It must also be presented in the schema of the application service.
     private readonly propertyNameOfPassword: string; // The property name of the password of an account. It must also be presented in the schema of the application service.
@@ -132,7 +132,7 @@ class AuthController extends Controller
     private readonly activationLinkPrivateKey?: string; // Private key to be used to sign activation link.
     private readonly activationLinkLifeTime?: number;
 
-    constructor (applicationService: ApplicationService, options: Options)
+    constructor (applicationService: AS, options: Options)
     {
         if (options.tokenLifetime <= 0 ||
             options.maxAllowedInvalidLoginAttempts <= 0 ||

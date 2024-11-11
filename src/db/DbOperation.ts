@@ -16,11 +16,11 @@ import Schema from "./Schema";
  * Uses a schema to communicate with MongoDB.
  */
 
-class DbOperation
+class DbOperation<S extends Schema>
 {
-    public readonly schema: Schema;
+    public readonly schema: S;
 
-    constructor (schema: Schema)
+    constructor (schema: S)
     {
         this.schema = schema;
     }

@@ -27,12 +27,12 @@ import ApplicationService, {UpdateOneHooks} from "./ApplicationService";
  * Uses an application service to communicate with MongoDB. The application service is either provided or created from a provided schema, DB operation, or DB service.
  */
 
-export interface Options
+export interface Options<S extends Schema = Schema, DBO extends DbOperation<S> = DbOperation<S>, DBS extends DbService<S, DBO> = DbService<S, DBO>, AS extends ApplicationService<S, DBO, DBS> = ApplicationService<S, DBO, DBS>>
 {
-    schema?: Schema;
-    dbOperation?: DbOperation;
-    dbService?: DbService;
-    applicationService?: ApplicationService;
+    schema?: S;
+    dbOperation?: DBO;
+    dbService?: DBS;
+    applicationService?: AS;
     persona?: string;
 }
 
@@ -84,7 +84,7 @@ export interface UpdateOneByIdAndVersionHooks
     before?: (_id: ObjectId, version: number, fields: any, session?: ClientSession) => Promise<void>;
     after?: (document: Document | null, session?: ClientSession) => Promise<void>;
     isSessionEnabled?: boolean;
-    applicationService?: UpdateOneHooks
+    applicationService?: UpdateOneHooks;
 }
 
 export interface SoftDeleteOneByIdAndVersionHooks
@@ -111,25 +111,25 @@ export interface SoftDeleteManyByIdAndVersionHooks
     isSessionEnabled?: boolean;
 }
 
-class ControllerService extends Service
+class ControllerService<S extends Schema = Schema, DBO extends DbOperation<S> = DbOperation<S>, DBS extends DbService<S, DBO> = DbService<S, DBO>, AS extends ApplicationService<S, DBO, DBS> = ApplicationService<S, DBO, DBS>> extends Service
 {
-    public readonly applicationService: ApplicationService;
+    public readonly applicationService: AS;
 
-    constructor (options: Options)
+    constructor (options: Options<S, DBO, DBS, AS>)
     {
         super(Service.LAYER.CONTROLLER, options.persona);
 
         if (isExist(options.schema) && !isExist(options.dbOperation) && !isExist(options.dbService) && !isExist(options.applicationService))
         {
-            this.applicationService = new ApplicationService({schema: options.schema, persona: options.persona});
+            this.applicationService = new ApplicationService({schema: options.schema, persona: options.persona}) as AS;
         }
         else if (!isExist(options.schema) && isExist(options.dbOperation) && !isExist(options.dbService) && !isExist(options.applicationService))
         {
-            this.applicationService = new ApplicationService({dbOperation: options.dbOperation, persona: options.persona});
+            this.applicationService = new ApplicationService({dbOperation: options.dbOperation, persona: options.persona}) as AS;
         }
         else if (!isExist(options.schema) && !isExist(options.dbOperation) && isExist(options.dbService) && !isExist(options.applicationService))
         {
-            this.applicationService = new ApplicationService({dbService: options.dbService, persona: options.persona});
+            this.applicationService = new ApplicationService({dbService: options.dbService, persona: options.persona}) as AS;
         }
         else if (!isExist(options.schema) && !isExist(options.dbOperation) && !isExist(options.dbService) && isExist(options.applicationService))
         {

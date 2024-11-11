@@ -79,12 +79,12 @@ export interface SoftDeleteManyByIdAndVersionHooks
     after?: (successfulDocuments: Array<Document>, session?: ClientSession) => Promise<void>;
 }
 
-class CrudController extends Controller
+class CrudController<CS extends ControllerService = ControllerService> extends Controller
 {
     public readonly apiType: string;
-    protected readonly controllerService: ControllerService;
+    protected readonly controllerService: CS;
 
-    constructor (apiType: string, controllerService: ControllerService)
+    constructor (apiType: string, controllerService: CS)
     {
         super();
 
