@@ -20,7 +20,7 @@ import Schema from "../db/Schema";
 import DbOperation from "../db/DbOperation";
 import Service from "../core/Service";
 import DbService from "./DbService";
-import ApplicationService from "./ApplicationService";
+import ApplicationService, {UpdateOneHooks} from "./ApplicationService";
 
 /**
  * Encapsulates an application service, providing necessary abstractions.
@@ -84,6 +84,7 @@ export interface UpdateOneByIdAndVersionHooks
     before?: (_id: ObjectId, version: number, fields: any, session?: ClientSession) => Promise<void>;
     after?: (document: Document | null, session?: ClientSession) => Promise<void>;
     isSessionEnabled?: boolean;
+    applicationService?: UpdateOneHooks
 }
 
 export interface SoftDeleteOneByIdAndVersionHooks
@@ -302,7 +303,7 @@ class ControllerService extends Service
             {
                 // @ts-ignore
                 isExist(hooks.before) ? await hooks.before(_id, version, fields, session) : undefined;
-                document = await this.applicationService.updateOneByIdAndVersion(_id, version, fields, session, {bearer: hooks.bearer});
+                document = await this.applicationService.updateOneByIdAndVersion(_id, version, fields, session, {bearer: hooks.bearer, ...hooks.applicationService});
                 isExist(hooks.after) ? await hooks.after(document, session) : undefined;
             },
             externalSession,
