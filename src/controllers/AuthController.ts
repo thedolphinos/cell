@@ -13,7 +13,7 @@ import ErrorSafe from "../safes/ErrorSafe";
 import SessionManager from "../db/SessionManager";
 import ApplicationService from "../services/ApplicationService";
 import Controller from "../core/Controller";
-import {AllowedPropertiesForRequestElements} from "../core/Router";
+import {RequestElementsControlDefinitions} from "../core/Router";
 
 export interface Options
 {
@@ -170,6 +170,122 @@ class AuthController extends Controller
         }
     }
 
+    private encrypt (plainText: string, key: string, iv: string): string
+    {
+        const encoding = {
+            input: "utf-8",
+            output: "hex"
+        };
+
+        const cipher = crypto.createCipheriv(AuthController.ENCRYPTION_ALGORITHM, Buffer.from(key, "hex"), Buffer.from(iv, "hex"));
+
+        // @ts-ignore
+        let cipherText: string = cipher.update(plainText, encoding.input, encoding.output);
+        // @ts-ignore
+        cipherText += cipher.final(encoding.output);
+
+        return cipherText;
+    }
+
+    private decrypt (encryptedText: string, key: string, iv: string)
+    {
+        const encoding = {
+            input: "hex",
+            output: "utf8"
+        };
+
+        const decipher = crypto.createDecipheriv(AuthController.ENCRYPTION_ALGORITHM, Buffer.from(key, "hex"), Buffer.from(iv, "hex"));
+
+        // @ts-ignore
+        let decryptedMessage: string = decipher.update(encryptedText, encoding.input, encoding.output);
+        // @ts-ignore
+        decryptedMessage += decipher.final(encoding.output);
+
+        return decryptedMessage;
+    }
+
+    /**
+     * > Encrypted "Authorization Bundle" (symmetric app key)
+     * ----> Authorization Bundle: Encrypted "Token" (symmetric account key) + "Account ID"
+     * --------> Token: Sign "Payload" (symmetric app key) (vulnerable)
+     * ------------> Payload: "Account ID" + "Some Data"
+     *
+     * 1) +Decrypt -> Encrypted "Authorization Bundle" (symmetric app key)
+     * 2) Check -> If the account exists using the account ID from "Authorization Bundle".
+     * 3) +Decrypt -> Encrypted "Token" from "Authorization Bundle"
+     * 4) +Verify -> "Token"
+     * 5) Check -> The account ID from "Payload" against "Authorization Bundle"
+     *
+     * +: Reverse of Encrypt.
+     */
+    private async decryptAndDecodeAuthorizationBundle (encryptedAuthorizationBundle: string, tokenPrivateKey: string): Promise<{account: Document, tokenPayload: any}>
+    {
+        // 1)
+        const authorizationBundle: any = JSON.parse(this.decrypt(encryptedAuthorizationBundle, this.encryptionKey, this.encryptionIv));
+
+        // 2)
+        const account: Document | null = await this.applicationService.readOneById(authorizationBundle._account);
+
+        if (!isExist(account))
+        {
+            throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
+        }
+
+        // 3)
+        const token = this.decrypt(authorizationBundle.token, account.encryption.aes.key, account.encryption.aes.iv);
+
+        // 4)
+        const tokenPayload: any = jwt.verify(token, tokenPrivateKey);
+
+        // 5)
+        if (!isSameIds(authorizationBundle._account, tokenPayload._account))
+        {
+            throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
+        }
+
+        return {
+            account,
+            tokenPayload
+        };
+    }
+
+    /**
+     * > Encrypted "Authorization Bundle" (symmetric app key)
+     * ----> Authorization Bundle: Encrypted "Token" (symmetric account key) + "Account ID"
+     * --------> Token: Sign "Payload" (symmetric app key) (vulnerable)
+     * ------------> Payload: "Account ID" + "Some Data"
+     *
+     * 1) Generate -> "Payload"
+     * 2) +Sign -> "Token"
+     * 3) +Encrypt -> "Token"
+     * 4) Generate -> "Authorization Bundle"
+     * 5) +Encrypt -> "Authorization Bundle"
+     *
+     * +: Reverse of Decrypt.
+     */
+    private async generateEncryptedAuthorizationBundle (account: Document, tokenPayload: any, tokenPrivateKey: string, tokenLifeTime: number): Promise<string>
+    {
+        tokenPayload._account = account._id.toString();
+
+        const token = jwt.sign(
+            tokenPayload,
+            tokenPrivateKey,
+            {
+                algorithm: "HS512",
+                expiresIn: tokenLifeTime
+            }
+        );
+
+        const encryptedToken = this.encrypt(token, account.encryption.aes.key, account.encryption.aes.iv);
+
+        const authorizationBundle = {
+            token: encryptedToken,
+            _account: account._id.toString()
+        };
+
+        return this.encrypt(JSON.stringify(authorizationBundle), this.encryptionKey, this.encryptionIv);
+    }
+
     public async verify (encryptedToken: string, publicKey: string): Promise<{account: Document, authorizationBundle: string}>
     {
         const accountRelatedToPublicKey: Document = await this.applicationService.readOne({encryption: {rsa: {publicKey}}});
@@ -238,13 +354,14 @@ class AuthController extends Controller
         };
     }
 
-    public async register (request: any, response: any, next?: any, hooks: RegisterHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async register (request: any, response: any, next?: any, hooks: RegisterHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
             hooks.bearer = init(hooks.bearer, {});
 
-            const {body} = AuthController.extractAndAuthorize(request, allowedPropertiesForRequestElements, {headers: false, pathParameters: false, queryString: false, body: true});
+            requestElementsControlDefinitions.body.status = "required";
+            const {body} = AuthController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
             isExist(hooks.body) ? await hooks.body(body) : undefined;
 
@@ -382,13 +499,14 @@ class AuthController extends Controller
         }
     }
 
-    public async activate (request: any, response: any, next?: any, hooks: ActivateHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async activate (request: any, response: any, next?: any, hooks: ActivateHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
             hooks.bearer = init(hooks.bearer, {});
 
-            const {body} = AuthController.extractAndAuthorize(request, allowedPropertiesForRequestElements, {headers: false, pathParameters: false, queryString: false, body: true});
+            requestElementsControlDefinitions.body.status = "required";
+            const {body} = AuthController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
             isExist(hooks.body) ? await hooks.body(body) : undefined;
 
@@ -474,13 +592,14 @@ class AuthController extends Controller
         }
     }
 
-    public async login (request: any, response: any, next?: any, hooks: LoginHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async login (request: any, response: any, next?: any, hooks: LoginHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
             hooks.bearer = init(hooks.bearer, {});
 
-            const {body} = AuthController.extractAndAuthorize(request, allowedPropertiesForRequestElements, {headers: false, pathParameters: false, queryString: false, body: true});
+            requestElementsControlDefinitions.body.status = "required";
+            const {body} = AuthController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
             isExist(hooks.body) ? await hooks.body(body) : undefined;
 
@@ -573,13 +692,14 @@ class AuthController extends Controller
         }
     }
 
-    public async authorize (request: any, response: any, next: any, hooks: AuthorizeHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async authorize (request: any, response: any, next: any, hooks: AuthorizeHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
             hooks.bearer = init(hooks.bearer, {});
 
-            const {headers} = AuthController.extractAndAuthorize(request, allowedPropertiesForRequestElements, {headers: true, pathParameters: false, queryString: false, body: false});
+            requestElementsControlDefinitions.headers.status = "required";
+            const {headers} = AuthController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
             if (!isExist(headers.authorization))
             {
@@ -609,7 +729,7 @@ class AuthController extends Controller
         }
     }
 
-    public async changePassword (request: any, response: any, next?: any, hooks: ChangePasswordHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async changePassword (request: any, response: any, next?: any, hooks: ChangePasswordHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
@@ -623,10 +743,8 @@ class AuthController extends Controller
 
             hooks.bearer = init(hooks.bearer, {});
 
-            AuthController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-            AuthController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-            AuthController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-            const body = AuthController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+            requestElementsControlDefinitions.body.status = "required";
+            const {body} = AuthController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
             isExist(hooks.body) ? await hooks.body(body) : undefined;
 
@@ -703,122 +821,6 @@ class AuthController extends Controller
         {
             this.sendResponseWhenError(response, error);
         }
-    }
-
-    /**
-     * > Encrypted "Authorization Bundle" (symmetric app key)
-     * ----> Authorization Bundle: Encrypted "Token" (symmetric account key) + "Account ID"
-     * --------> Token: Sign "Payload" (symmetric app key) (vulnerable)
-     * ------------> Payload: "Account ID" + "Some Data"
-     *
-     * 1) Generate -> "Payload"
-     * 2) +Sign -> "Token"
-     * 3) +Encrypt -> "Token"
-     * 4) Generate -> "Authorization Bundle"
-     * 5) +Encrypt -> "Authorization Bundle"
-     *
-     * +: Reverse of Decrypt.
-     */
-    private async generateEncryptedAuthorizationBundle (account: Document, tokenPayload: any, tokenPrivateKey: string, tokenLifeTime: number): Promise<string>
-    {
-        tokenPayload._account = account._id.toString();
-
-        const token = jwt.sign(
-            tokenPayload,
-            tokenPrivateKey,
-            {
-                algorithm: "HS512",
-                expiresIn: tokenLifeTime
-            }
-        );
-
-        const encryptedToken = this.encrypt(token, account.encryption.aes.key, account.encryption.aes.iv);
-
-        const authorizationBundle = {
-            token: encryptedToken,
-            _account: account._id.toString()
-        };
-
-        return this.encrypt(JSON.stringify(authorizationBundle), this.encryptionKey, this.encryptionIv);
-    }
-
-    /**
-     * > Encrypted "Authorization Bundle" (symmetric app key)
-     * ----> Authorization Bundle: Encrypted "Token" (symmetric account key) + "Account ID"
-     * --------> Token: Sign "Payload" (symmetric app key) (vulnerable)
-     * ------------> Payload: "Account ID" + "Some Data"
-     *
-     * 1) +Decrypt -> Encrypted "Authorization Bundle" (symmetric app key)
-     * 2) Check -> If the account exists using the account ID from "Authorization Bundle".
-     * 3) +Decrypt -> Encrypted "Token" from "Authorization Bundle"
-     * 4) +Verify -> "Token"
-     * 5) Check -> The account ID from "Payload" against "Authorization Bundle"
-     *
-     * +: Reverse of Encrypt.
-     */
-    private async decryptAndDecodeAuthorizationBundle (encryptedAuthorizationBundle: string, tokenPrivateKey: string): Promise<{account: Document, tokenPayload: any}>
-    {
-        // 1)
-        const authorizationBundle: any = JSON.parse(this.decrypt(encryptedAuthorizationBundle, this.encryptionKey, this.encryptionIv));
-
-        // 2)
-        const account: Document | null = await this.applicationService.readOneById(authorizationBundle._account);
-
-        if (!isExist(account))
-        {
-            throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
-        }
-
-        // 3)
-        const token = this.decrypt(authorizationBundle.token, account.encryption.aes.key, account.encryption.aes.iv);
-
-        // 4)
-        const tokenPayload: any = jwt.verify(token, tokenPrivateKey);
-
-        // 5)
-        if (!isSameIds(authorizationBundle._account, tokenPayload._account))
-        {
-            throw new UnauthorizedError(ErrorSafe.getData().HTTP_22);
-        }
-
-        return {
-            account,
-            tokenPayload
-        };
-    }
-
-    private encrypt (plainText: string, key: string, iv: string): string
-    {
-        const encoding = {
-            input: "utf-8",
-            output: "hex"
-        };
-
-        const cipher = crypto.createCipheriv(AuthController.ENCRYPTION_ALGORITHM, Buffer.from(key, "hex"), Buffer.from(iv, "hex"));
-
-        // @ts-ignore
-        let cipherText: string = cipher.update(plainText, encoding.input, encoding.output);
-        // @ts-ignore
-        cipherText += cipher.final(encoding.output);
-
-        return cipherText;
-    }
-
-    private decrypt (encryptedText: string, key: string, iv: string)
-    {
-        const encoding = {
-            input: "hex",
-            output: "utf8"
-        };
-
-        const decipher = crypto.createDecipheriv(AuthController.ENCRYPTION_ALGORITHM, Buffer.from(key, "hex"), Buffer.from(iv, "hex"));
-
-        // @ts-ignore
-        let decryptedMessage: string = decipher.update(encryptedText, encoding.input, encoding.output);
-        // @ts-ignore
-        decryptedMessage += decipher.final(encoding.output);
-
-        return decryptedMessage;
     }
 }
 

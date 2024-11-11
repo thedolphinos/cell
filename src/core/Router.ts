@@ -1,9 +1,9 @@
 import express, {RouterOptions, IRouter} from "express";
 
-import {isExist} from "@thedolphinos/utility4js";
-
 import Controller from "./Controller";
 import CrudController, {SearchHooks, ReadHooks, CreateOneHooks, UpdateOneByIdAndVersionHooks, SoftDeleteOneByIdAndVersionHooks, DeleteOneByIdAndVersionHooks, SoftDeleteManyByIdAndVersionHooks} from "../controllers/CrudController";
+
+export type Status = "required" | "optional" | "forbidden"
 
 export interface AllowedProperties
 {
@@ -22,55 +22,79 @@ export interface PropertyDefinition
         Array<{[key: string]: PropertyDefinition}>;
 }
 
-export interface AllowedPropertiesForRequestElements
+export interface HeadersControlDefinition
 {
-    headers?: AllowedProperties | SpecialAllowedPropertyAll;
-    pathParameters?: AllowedProperties | SpecialAllowedPropertyAll;
-    queryString?: AllowedProperties | SpecialAllowedPropertyAll;
-    body?: PropertyDefinition;
+    status: Status;
+    allowedProperties: AllowedProperties | SpecialAllowedPropertyAll;
+}
+
+export interface PathParametersControlDefinition
+{
+    status: Status;
+    allowedProperties: AllowedProperties | SpecialAllowedPropertyAll;
+}
+
+export interface QueryStringControlDefinition
+{
+    status: Status;
+    allowedProperties: AllowedProperties | SpecialAllowedPropertyAll;
+}
+
+export interface BodyControlDefinition
+{
+    status: Status;
+    propertyDefinition: PropertyDefinition;
+}
+
+export interface RequestElementsControlDefinitions
+{
+    headers?: HeadersControlDefinition;
+    pathParameters?: PathParametersControlDefinition;
+    queryString?: QueryStringControlDefinition;
+    body?: BodyControlDefinition;
 }
 
 export interface RoutesDefinition
 {
     SEARCH: {
         isEnabled: boolean;
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        requestElementsControlDefinitions: RequestElementsControlDefinitions;
         hooks: SearchHooks;
         searchFields: Array<string>;
     };
     READ: {
         isEnabled: boolean;
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        requestElementsControlDefinitions: RequestElementsControlDefinitions;
         hooks: ReadHooks;
     };
     READ_ONE_BY_ID: {
         isEnabled: boolean;
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        requestElementsControlDefinitions: RequestElementsControlDefinitions;
         hooks: ReadHooks;
     };
     CREATE_ONE: {
         isEnabled: boolean;
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        requestElementsControlDefinitions: RequestElementsControlDefinitions;
         hooks: CreateOneHooks;
     };
     UPDATE_ONE_BY_ID_AND_VERSION: {
         isEnabled: boolean;
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        requestElementsControlDefinitions: RequestElementsControlDefinitions;
         hooks: UpdateOneByIdAndVersionHooks;
     };
     SOFT_DELETE_ONE_BY_ID_AND_VERSION: {
         isEnabled: boolean;
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        requestElementsControlDefinitions: RequestElementsControlDefinitions;
         hooks: SoftDeleteOneByIdAndVersionHooks;
     };
     DELETE_ONE_BY_ID_AND_VERSION: {
         isEnabled: boolean;
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        requestElementsControlDefinitions: RequestElementsControlDefinitions;
         hooks: DeleteOneByIdAndVersionHooks;
     };
     SOFT_DELETE_MANY_BY_ID_AND_VERSION: {
         isEnabled: boolean;
-        allowedPropertiesForRequestElements: AllowedPropertiesForRequestElements;
+        requestElementsControlDefinitions: RequestElementsControlDefinitions;
         hooks: SoftDeleteManyByIdAndVersionHooks;
     };
 }
@@ -137,7 +161,7 @@ class Router
                               });
     }
 
-    static generateRoutes (router: IRouter, routesDefinitions: RoutesDefinition, crudController: CrudController, verify?: {method: Function, allowedPropertiesForHeaders: AllowedProperties})
+    static generateRoutes (router: IRouter, routesDefinitions: RoutesDefinition, crudController: CrudController, verify?: {method: Function, arguments: Array<any>})
     {
         const apiType = crudController.apiType;
 
@@ -195,18 +219,13 @@ class Router
                     }
                 }
 
-                if (isExist(verify?.method))
-                {
-                    router.route(routePath)[httpMethodName]((request, response, next) => verify.method(request, response, next, undefined, verify.allowedPropertiesForHeaders));
-                }
-
                 // @ts-ignore
                 const crudControllerMethod: Function = crudController[crudControllerMethodName];
 
                 router.route(routePath)[httpMethodName]((request, response, next) => crudControllerMethod(
                     request, response, next,
                     routeDefinition.hooks,
-                    routeDefinition.allowedPropertiesForRequestElements,
+                    routeDefinition.requestElementsControlDefinitions,
                     // @ts-ignore
                     crudControllerMethodName === Router.MAP_ROUTE_NAME_TO_CRUD_CONTROLLER_METHOD_NAME.SEARCH ? routeDefinition.searchFields : null
                 ));

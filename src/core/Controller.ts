@@ -1,13 +1,12 @@
 import _ from "lodash";
 
 import Logger from "./Logger";
-import Validator from "../helpers/Validator";
 import ErrorSafe from "../safes/ErrorSafe";
 import DataType from "./DataType.json";
 
 import {isExist, isInitialized, isValidNumber, isValidDate, isValidId} from "@thedolphinos/utility4js";
-import {InvalidArgumentsError, ClientError, InternalServerError, BadRequestError, ForbiddenError, HeadersMissingError, PathParametersMissingError, QueryStringMissingError, BodyMissingError, RequiredPropertiesMissingError} from "@thedolphinos/error4js";
-import {AllowedProperties, PropertyDefinition, SpecialAllowedPropertyAll, AllowedPropertiesForRequestElements} from "./Router";
+import {ClientError, InternalServerError, BadRequestError, ForbiddenError, HeadersMissingError, PathParametersMissingError, QueryStringMissingError, BodyMissingError, RequiredPropertiesMissingError} from "@thedolphinos/error4js";
+import {AllowedProperties, SpecialAllowedPropertyAll, PropertyDefinition, HeadersControlDefinition, PathParametersControlDefinition, QueryStringControlDefinition, BodyControlDefinition, RequestElementsControlDefinitions} from "./Router";
 
 class Controller
 {
@@ -23,16 +22,6 @@ class Controller
         "ALL": "*"
     };
 
-    /**
-     * Maps request elements to request keys in Express.
-     */
-    private static readonly REQUEST_ELEMENT = {
-        "HEADERS": "headers",
-        "PATH_PARAMETERS": "params",
-        "QUERY_STRING": "query",
-        "BODY": "body"
-    };
-
     private static readonly VALID_HTTP_STATUS_CODES = {
         INFORMATIONAL: [100, 101, 102, 103],
         SUCCESSFUL: [200, 201, 202, 203, 204, 205, 206],
@@ -41,12 +30,12 @@ class Controller
         SERVER_ERROR: [500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511]
     };
 
-    protected static extractAndAuthorize (request: any, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements, isRequiredForRequestElements?: {headers: boolean, pathParameters: boolean, queryString: boolean, body: boolean}): {headers: any, pathParameters: any, queryString: any, body: any}
+    protected static extractAndAuthorize (request: any, requestElementsControlDefinitions?: RequestElementsControlDefinitions): {headers: any, pathParameters: any, queryString: any, body: any}
     {
-        const headers = Controller.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, isRequiredForRequestElements.headers);
-        const pathParameters = Controller.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, isRequiredForRequestElements.pathParameters);
-        const queryString = Controller.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, isRequiredForRequestElements.queryString);
-        const body = Controller.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, isRequiredForRequestElements.body);
+        const headers = Controller.extractAndAuthorizeHeaders(request, requestElementsControlDefinitions.headers);
+        const pathParameters = Controller.extractAndAuthorizePathParameters(request, requestElementsControlDefinitions.pathParameters);
+        const queryString = Controller.extractAndAuthorizeQueryString(request, requestElementsControlDefinitions.queryString);
+        const body = Controller.extractAndAuthorizeBody(request, requestElementsControlDefinitions.body);
 
         return {
             headers,
@@ -56,158 +45,152 @@ class Controller
         };
     }
 
-    protected static extractAndAuthorizeHeaders (request: any, allowedProperties: AllowedProperties | SpecialAllowedPropertyAll, isRequired: boolean = false): any
+    protected static extractAndAuthorizeHeaders (request: any, headerControlDefinition: HeadersControlDefinition): any
     {
-        return Controller.extractAndAuthorizeRequestElement(Controller.REQUEST_ELEMENT.HEADERS, request, allowedProperties, undefined, isRequired);
-    }
+        const headers: any = request.headers;
 
-    protected static extractAndAuthorizePathParameters (request: any, allowedProperties: AllowedProperties | SpecialAllowedPropertyAll, isRequired: boolean): any
-    {
-        return Controller.extractAndAuthorizeRequestElement(Controller.REQUEST_ELEMENT.PATH_PARAMETERS, request, allowedProperties, undefined, isRequired);
-    }
+        const isSent: boolean = isInitialized(headers);
 
-    protected static extractAndAuthorizeQueryString (request: any, allowedProperties: AllowedProperties | SpecialAllowedPropertyAll, isRequired: boolean): any
-    {
-        return Controller.extractAndAuthorizeRequestElement(Controller.REQUEST_ELEMENT.QUERY_STRING, request, allowedProperties, undefined, isRequired);
-    }
-
-    protected static extractAndAuthorizeBody (request: any, propertyDefinition: PropertyDefinition, isRequired: boolean): any
-    {
-        return Controller.extractAndAuthorizeRequestElement(Controller.REQUEST_ELEMENT.BODY, request, undefined, propertyDefinition, isRequired);
-    }
-
-    private static extractAndAuthorizeRequestElement (requestElement: string, request: any, allowedProperties?: AllowedProperties | SpecialAllowedPropertyAll, propertyDefinition?: PropertyDefinition, isRequired: boolean = true): any
-    {
-        const extractedRequestElement: any = request[requestElement];
-        let requestElementErrorName: string;
-        const isSent: boolean = isInitialized(extractedRequestElement);
-
-        switch (requestElement)
+        switch (headerControlDefinition.status)
         {
-
-            case Controller.REQUEST_ELEMENT.HEADERS:
+            case "required":
             {
-                requestElementErrorName = "headers";
-
-                if (isExist(allowedProperties))
+                if (!isSent)
                 {
-                    if (!Validator.isValidParameterAllowedProperties(allowedProperties))
-                    {
-                        throw new InvalidArgumentsError(ErrorSafe.getData().DEV_1);
-                    }
-                    if (isRequired && !isSent)
-                    {
-                        throw new HeadersMissingError(ErrorSafe.getData().HTTP_211);
-                    }
-                    if (isSent)
-                    {
-                        Controller.authorizePropertiesForAllowedProperties(requestElementErrorName, extractedRequestElement, allowedProperties);
-                    }
-                }
-                else
-                {
-                    if (isSent)
-                    {
-                        Logger.warn(`In the request, "${requestElementErrorName}" is sent when not allowed!`, 9);
-                        throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
-                    }
+                    throw new HeadersMissingError(ErrorSafe.getData().HTTP_211);
                 }
 
+                Controller.authorizePropertiesForAllowedProperties("headers", headers, headerControlDefinition.allowedProperties);
                 break;
             }
-            case Controller.REQUEST_ELEMENT.PATH_PARAMETERS:
+            case "optional":
             {
-                requestElementErrorName = "path parameters";
-
-                if (isExist(allowedProperties))
-                {
-                    if (!Validator.isValidParameterAllowedProperties(allowedProperties))
-                    {
-                        throw new InvalidArgumentsError(ErrorSafe.getData().DEV_1);
-                    }
-                    if (isRequired && !isSent)
-                    {
-                        throw new PathParametersMissingError(ErrorSafe.getData().HTTP_213);
-                    }
-                    if (isSent)
-                    {
-                        Controller.authorizePropertiesForAllowedProperties(requestElementErrorName, extractedRequestElement, allowedProperties);
-                    }
-                }
-                else
-                {
-                    if (isSent)
-                    {
-                        Logger.warn(`In the request, "${requestElementErrorName}" is sent when not allowed!`, 9);
-                        throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
-                    }
-                }
-
                 break;
             }
-            case Controller.REQUEST_ELEMENT.QUERY_STRING:
+            case "forbidden":
             {
-                requestElementErrorName = "query string";
-
-                if (isExist(allowedProperties))
+                if (isSent)
                 {
-                    if (!Validator.isValidParameterAllowedProperties(allowedProperties))
-                    {
-                        throw new InvalidArgumentsError(ErrorSafe.getData().DEV_1);
-                    }
-                    if (isRequired && !isSent)
-                    {
-                        throw new QueryStringMissingError(ErrorSafe.getData().HTTP_215);
-                    }
-                    if (isSent)
-                    {
-                        Controller.authorizePropertiesForAllowedProperties(requestElementErrorName, extractedRequestElement, allowedProperties);
-                    }
-                }
-                else
-                {
-                    if (isSent)
-                    {
-                        Logger.warn(`In the request, "${requestElementErrorName}" is sent when not allowed!`, 9);
-                        throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
-                    }
-                }
-
-                break;
-            }
-            case Controller.REQUEST_ELEMENT.BODY:
-            {
-                requestElementErrorName = "body";
-
-                if (isExist(propertyDefinition))
-                {
-                    if (!Validator.isValidParameterPropertyDefinition(propertyDefinition))
-                    {
-                        throw new InvalidArgumentsError(ErrorSafe.getData().DEV_1);
-                    }
-                    if (isRequired && !isSent)
-                    {
-                        throw new BodyMissingError(ErrorSafe.getData().HTTP_217);
-                    }
-                    if (isSent)
-                    {
-                        Controller.authorizePropertiesForPropertyDefinition("", extractedRequestElement, propertyDefinition);
-                    }
-                }
-                else
-                {
-                    if (isSent)
-                    {
-                        Logger.warn(`In the request, "${requestElementErrorName}" is sent when not allowed!`, 9);
-                        throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
-                    }
+                    Logger.warn(`In the request, "headers" sent when not allowed!`, 9);
+                    throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
                 }
 
                 break;
             }
         }
 
-        return extractedRequestElement;
+        return headers;
+    }
+
+    protected static extractAndAuthorizePathParameters (request: any, pathParametersControlDefinition: PathParametersControlDefinition): any
+    {
+        const pathParameters: any = request.params;
+
+        const isSent: boolean = isInitialized(pathParameters);
+
+        switch (pathParametersControlDefinition.status)
+        {
+            case "required":
+            {
+                if (!isSent)
+                {
+                    throw new PathParametersMissingError(ErrorSafe.getData().HTTP_213);
+                }
+
+                Controller.authorizePropertiesForAllowedProperties("path parameters", pathParameters, pathParametersControlDefinition.allowedProperties);
+                break;
+            }
+            case "optional":
+            {
+                break;
+            }
+            case "forbidden":
+            {
+                if (isSent)
+                {
+                    Logger.warn(`In the request, "path parameters" sent when not allowed!`, 9);
+                    throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
+                }
+
+                break;
+            }
+        }
+
+        return pathParameters;
+    }
+
+    protected static extractAndAuthorizeQueryString (request: any, queryStringControlDefinition: QueryStringControlDefinition): any
+    {
+        const query: any = request.query;
+
+        const isSent: boolean = isInitialized(query);
+
+        switch (queryStringControlDefinition.status)
+        {
+            case "required":
+            {
+                if (!isSent)
+                {
+                    throw new QueryStringMissingError(ErrorSafe.getData().HTTP_215);
+                }
+
+                Controller.authorizePropertiesForAllowedProperties("query string", query, queryStringControlDefinition.allowedProperties);
+                break;
+            }
+            case "optional":
+            {
+                break;
+            }
+            case "forbidden":
+            {
+                if (isSent)
+                {
+                    Logger.warn(`In the request, "query string" sent when not allowed!`, 9);
+                    throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
+                }
+
+                break;
+            }
+        }
+
+        return query;
+    }
+
+    protected static extractAndAuthorizeBody (request: any, bodyControlDefinition: BodyControlDefinition): any
+    {
+        const body: any = request.body;
+
+        const isSent: boolean = isInitialized(body);
+
+        switch (bodyControlDefinition.status)
+        {
+            case "required":
+            {
+                if (!isSent)
+                {
+                    throw new BodyMissingError(ErrorSafe.getData().HTTP_217);
+                }
+
+                Controller.authorizePropertiesForPropertyDefinition("", body, bodyControlDefinition.propertyDefinition);
+                break;
+            }
+            case "optional":
+            {
+                break;
+            }
+            case "forbidden":
+            {
+                if (isSent)
+                {
+                    Logger.warn(`In the request, "body" sent when not allowed!`, 9);
+                    throw new ForbiddenError(ErrorSafe.getData().HTTP_23);
+                }
+
+                break;
+            }
+        }
+
+        return body;
     }
 
     private static authorizePropertiesForAllowedProperties (requestElementErrorName: string, object: any, allowedProperties: AllowedProperties | SpecialAllowedPropertyAll): void
@@ -247,7 +230,7 @@ class Controller
 
                 if (isExist(allowedProperties.optional))
                 {
-                    if (allowedProperties.optional.includes(property))
+                    if (allowedProperties.optional.includes(property) || allowedProperties.optional.includes("*"))
                     {
                         isAllowed = true;
                     }

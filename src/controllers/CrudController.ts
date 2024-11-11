@@ -5,7 +5,7 @@ import {isExist, isInitialized, init} from "@thedolphinos/utility4js";
 import SessionManager from "../db/SessionManager";
 import ControllerService from "../services/ControllerService";
 import Controller from "../core/Controller";
-import {AllowedPropertiesForRequestElements} from "../core/Router";
+import {RequestElementsControlDefinitions} from "../core/Router";
 
 export interface SearchHooks
 {
@@ -92,7 +92,7 @@ class CrudController extends Controller
         this.controllerService = controllerService;
     }
 
-    async search (request: any, response: any, next?: any, hooks: SearchHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements, searchFields: Array<string> = []): Promise<void>
+    public async search (request: any, response: any, next?: any, hooks: SearchHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions, searchFields: Array<string> = []): Promise<void>
     {
         try
         {
@@ -117,10 +117,8 @@ class CrudController extends Controller
                 } */
                 case Controller.API_TYPE.NON_REST:
                 {
-                    CrudController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-                    CrudController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-                    CrudController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-                    const body = CrudController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+                    requestElementsControlDefinitions.body.status = "required";
+                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
                     value = body.value;
                     query = body.query;
@@ -157,7 +155,7 @@ class CrudController extends Controller
         }
     }
 
-    async read (request: any, response: any, next?: any, hooks: ReadHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async read (request: any, response: any, next?: any, hooks: ReadHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
@@ -180,10 +178,8 @@ class CrudController extends Controller
                 } */
                 case Controller.API_TYPE.NON_REST:
                 {
-                    CrudController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-                    CrudController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-                    CrudController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-                    const body = CrudController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+                    requestElementsControlDefinitions.body.status = "required";
+                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
                     query = body.query;
                     options = body.options;
@@ -216,7 +212,7 @@ class CrudController extends Controller
         }
     }
 
-    async readOneById (request: any, response: any, next?: any, hooks: ReadOneByIdHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async readOneById (request: any, response: any, next?: any, hooks: ReadOneByIdHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
@@ -238,10 +234,8 @@ class CrudController extends Controller
                 } */
                 case Controller.API_TYPE.NON_REST:
                 {
-                    CrudController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-                    CrudController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-                    CrudController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-                    const body = CrudController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+                    requestElementsControlDefinitions.body.status = "required";
+                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
                     _id = body._id;
 
@@ -270,7 +264,7 @@ class CrudController extends Controller
         }
     }
 
-    async createOne (request: any, response: any, next?: any, hooks: CreateOneHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async createOne (request: any, response: any, next?: any, hooks: CreateOneHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
@@ -291,10 +285,8 @@ class CrudController extends Controller
                 } */
                 case Controller.API_TYPE.NON_REST:
                 {
-                    CrudController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-                    CrudController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-                    CrudController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-                    const body = CrudController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+                    requestElementsControlDefinitions.body.status = "required";
+                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
                     fields = body.fields;
 
@@ -325,7 +317,7 @@ class CrudController extends Controller
         }
     }
 
-    async updateOneByIdAndVersion (request: any, response: any, next?: any, hooks: UpdateOneByIdAndVersionHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async updateOneByIdAndVersion (request: any, response: any, next?: any, hooks: UpdateOneByIdAndVersionHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
@@ -350,10 +342,8 @@ class CrudController extends Controller
                 } */
                 case Controller.API_TYPE.NON_REST:
                 {
-                    CrudController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-                    CrudController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-                    CrudController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-                    const body = CrudController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+                    requestElementsControlDefinitions.body.status = "required";
+                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
                     _id = body._id;
                     version = body.version;
@@ -386,7 +376,7 @@ class CrudController extends Controller
         }
     }
 
-    async softDeleteOneByIdAndVersion (request: any, response: any, next?: any, hooks: SoftDeleteOneByIdAndVersionHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async softDeleteOneByIdAndVersion (request: any, response: any, next?: any, hooks: SoftDeleteOneByIdAndVersionHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
@@ -410,10 +400,8 @@ class CrudController extends Controller
                 } */
                 case Controller.API_TYPE.NON_REST:
                 {
-                    CrudController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-                    CrudController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-                    CrudController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-                    const body = CrudController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+                    requestElementsControlDefinitions.body.status = "required";
+                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
                     _id = body._id;
                     version = body.version;
@@ -443,7 +431,7 @@ class CrudController extends Controller
         }
     }
 
-    async deleteOneByIdAndVersion (request: any, response: any, next?: any, hooks: DeleteOneByIdAndVersionHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async deleteOneByIdAndVersion (request: any, response: any, next?: any, hooks: DeleteOneByIdAndVersionHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
@@ -467,10 +455,8 @@ class CrudController extends Controller
                 } */
                 case Controller.API_TYPE.NON_REST:
                 {
-                    CrudController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-                    CrudController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-                    CrudController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-                    const body = CrudController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+                    requestElementsControlDefinitions.body.status = "required";
+                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
                     _id = body._id;
                     version = body.version;
@@ -500,7 +486,7 @@ class CrudController extends Controller
         }
     }
 
-    async softDeleteManyByIdAndVersion (request: any, response: any, next?: any, hooks: SoftDeleteManyByIdAndVersionHooks = {}, allowedPropertiesForRequestElements?: AllowedPropertiesForRequestElements): Promise<void>
+    public async softDeleteManyByIdAndVersion (request: any, response: any, next?: any, hooks: SoftDeleteManyByIdAndVersionHooks = {}, requestElementsControlDefinitions?: RequestElementsControlDefinitions): Promise<void>
     {
         try
         {
@@ -518,10 +504,8 @@ class CrudController extends Controller
                 } */
                 case Controller.API_TYPE.NON_REST:
                 {
-                    CrudController.extractAndAuthorizeHeaders(request, allowedPropertiesForRequestElements.headers, false);
-                    CrudController.extractAndAuthorizePathParameters(request, allowedPropertiesForRequestElements.pathParameters, false);
-                    CrudController.extractAndAuthorizeQueryString(request, allowedPropertiesForRequestElements.queryString, false);
-                    const body = CrudController.extractAndAuthorizeBody(request, allowedPropertiesForRequestElements.body, true);
+                    requestElementsControlDefinitions.body.status = "required";
+                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
 
                     documents = body.documents;
 
