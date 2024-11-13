@@ -118,7 +118,7 @@ class CrudController<CS extends ControllerService = ControllerService> extends C
                 case Controller.API_TYPE.NON_REST:
                 {
                     requestElementsControlDefinitions.body.status = "required";
-                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
+                    const {body} = CrudController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
                     value = body.value;
                     query = body.query;
@@ -179,7 +179,7 @@ class CrudController<CS extends ControllerService = ControllerService> extends C
                 case Controller.API_TYPE.NON_REST:
                 {
                     requestElementsControlDefinitions.body.status = "required";
-                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
+                    const {body} = CrudController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
                     query = body.query;
                     options = body.options;
@@ -235,7 +235,7 @@ class CrudController<CS extends ControllerService = ControllerService> extends C
                 case Controller.API_TYPE.NON_REST:
                 {
                     requestElementsControlDefinitions.body.status = "required";
-                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
+                    const {body} = CrudController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
                     _id = body._id;
 
@@ -286,7 +286,7 @@ class CrudController<CS extends ControllerService = ControllerService> extends C
                 case Controller.API_TYPE.NON_REST:
                 {
                     requestElementsControlDefinitions.body.status = "required";
-                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
+                    const {body} = CrudController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
                     fields = body.fields;
 
@@ -343,7 +343,7 @@ class CrudController<CS extends ControllerService = ControllerService> extends C
                 case Controller.API_TYPE.NON_REST:
                 {
                     requestElementsControlDefinitions.body.status = "required";
-                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
+                    const {body} = CrudController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
                     _id = body._id;
                     version = body.version;
@@ -401,7 +401,7 @@ class CrudController<CS extends ControllerService = ControllerService> extends C
                 case Controller.API_TYPE.NON_REST:
                 {
                     requestElementsControlDefinitions.body.status = "required";
-                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
+                    const {body} = CrudController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
                     _id = body._id;
                     version = body.version;
@@ -456,7 +456,7 @@ class CrudController<CS extends ControllerService = ControllerService> extends C
                 case Controller.API_TYPE.NON_REST:
                 {
                     requestElementsControlDefinitions.body.status = "required";
-                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
+                    const {body} = CrudController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
                     _id = body._id;
                     version = body.version;
@@ -505,7 +505,7 @@ class CrudController<CS extends ControllerService = ControllerService> extends C
                 case Controller.API_TYPE.NON_REST:
                 {
                     requestElementsControlDefinitions.body.status = "required";
-                    const {body} = CrudController.extractAndAuthorize(request, requestElementsControlDefinitions);
+                    const {body} = CrudController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
                     documents = body.documents;
 

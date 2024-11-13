@@ -361,7 +361,7 @@ class AuthController<AS extends ApplicationService = ApplicationService> extends
             hooks.bearer = init(hooks.bearer, {});
 
             requestElementsControlDefinitions.body.status = "required";
-            const {body} = AuthController.extractAndAuthorize(request, requestElementsControlDefinitions);
+            const {body} = AuthController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
             isExist(hooks.body) ? await hooks.body(body) : undefined;
 
@@ -506,7 +506,7 @@ class AuthController<AS extends ApplicationService = ApplicationService> extends
             hooks.bearer = init(hooks.bearer, {});
 
             requestElementsControlDefinitions.body.status = "required";
-            const {body} = AuthController.extractAndAuthorize(request, requestElementsControlDefinitions);
+            const {body} = AuthController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
             isExist(hooks.body) ? await hooks.body(body) : undefined;
 
@@ -599,7 +599,7 @@ class AuthController<AS extends ApplicationService = ApplicationService> extends
             hooks.bearer = init(hooks.bearer, {});
 
             requestElementsControlDefinitions.body.status = "required";
-            const {body} = AuthController.extractAndAuthorize(request, requestElementsControlDefinitions);
+            const {body} = AuthController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
             isExist(hooks.body) ? await hooks.body(body) : undefined;
 
@@ -699,7 +699,7 @@ class AuthController<AS extends ApplicationService = ApplicationService> extends
             hooks.bearer = init(hooks.bearer, {});
 
             requestElementsControlDefinitions.headers.status = "required";
-            const {headers} = AuthController.extractAndAuthorize(request, requestElementsControlDefinitions);
+            const {headers} = AuthController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
             if (!isExist(headers.authorization))
             {
@@ -744,7 +744,7 @@ class AuthController<AS extends ApplicationService = ApplicationService> extends
             hooks.bearer = init(hooks.bearer, {});
 
             requestElementsControlDefinitions.body.status = "required";
-            const {body} = AuthController.extractAndAuthorize(request, requestElementsControlDefinitions);
+            const {body} = AuthController.extractAndAuthorize(request, response, requestElementsControlDefinitions);
 
             isExist(hooks.body) ? await hooks.body(body) : undefined;
 

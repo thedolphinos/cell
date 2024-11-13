@@ -30,12 +30,24 @@ class Controller
         SERVER_ERROR: [500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511]
     };
 
-    protected static extractAndAuthorize (request: any, requestElementsControlDefinitions?: RequestElementsControlDefinitions): {headers: any, pathParameters: any, queryString: any, body: any}
+    protected static extractAndAuthorize (request: any, response: any, requestElementsControlDefinitions?: RequestElementsControlDefinitions): {headers: any, pathParameters: any, queryString: any, body: any}
     {
+        if (isInitialized(response.locals.extractedAndAuthorized))
+        {
+            return response.locals.extractedAndAuthorized;
+        }
+
         const headers = Controller.extractAndAuthorizeHeaders(request, requestElementsControlDefinitions.headers);
         const pathParameters = Controller.extractAndAuthorizePathParameters(request, requestElementsControlDefinitions.pathParameters);
         const queryString = Controller.extractAndAuthorizeQueryString(request, requestElementsControlDefinitions.queryString);
         const body = Controller.extractAndAuthorizeBody(request, requestElementsControlDefinitions.body);
+
+        response.locals.extractedAndAuthorized = {
+            headers,
+            pathParameters,
+            queryString,
+            body
+        };
 
         return {
             headers,
