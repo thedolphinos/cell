@@ -718,14 +718,17 @@ class AuthController<AS extends ApplicationService = ApplicationService> extends
             {
                 await this.sendResponse(request, response, 200);
             }
-            else
-            {
-                next();
-            }
         }
         catch (error)
         {
-            this.sendResponseWhenError(response, error);
+            if (hooks.isRespond)
+            {
+                this.sendResponseWhenError(response, error);
+            }
+            else
+            {
+                throw error;
+            }
         }
     }
 
