@@ -134,15 +134,13 @@ class Service
             return candidate;
         }
 
-        let binaryData: Buffer;
-
         const isBase64: boolean = /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{2}==)?$/.test(candidate);
 
         if (isBase64)
         {
             try
             {
-                binaryData = Buffer.from(candidate, "base64");
+                candidate = Buffer.from(candidate, "base64");
             }
             catch (error)
             {
@@ -153,7 +151,7 @@ class Service
         {
             try
             {
-                binaryData = Buffer.from(candidate, "utf-8");
+                candidate = Buffer.from(candidate, "utf-8");
             }
             catch (error)
             {
@@ -166,7 +164,7 @@ class Service
             throw new BadRequestError(ErrorSafe.getData().HTTP_21);
         }
 
-        return binaryData;
+        return candidate;
     }
 
     protected validateAndConvertBooleanCandidate (candidate: any): boolean | null
