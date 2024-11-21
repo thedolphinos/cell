@@ -412,6 +412,7 @@ class DbService<S extends Schema = Schema, DBO extends DbOperation<S> = DbOperat
 
                 switch (Schema.identifyDefinitionBsonType(propertyDefinition))
                 {
+                    case BsonType.BinaryData:
                     case BsonType.Boolean:
                     case BsonType.Int:
                     case BsonType.Double:
@@ -474,6 +475,7 @@ class DbService<S extends Schema = Schema, DBO extends DbOperation<S> = DbOperat
 
                 switch (Schema.identifyDefinitionBsonType(definition.items))
                 {
+                    case BsonType.BinaryData:
                     case BsonType.Boolean:
                     case BsonType.Int:
                     case BsonType.Double:

@@ -79,6 +79,10 @@ class Service
     {
         switch (Schema.identifyDefinitionBsonType(schemaDefinition))
         {
+            case BsonType.BinaryData:
+            {
+                return this.validateAndConvertBinaryDataCandidate(candidate);
+            }
             case BsonType.Boolean:
             {
                 return this.validateAndConvertBooleanCandidate(candidate);
@@ -116,6 +120,48 @@ class Service
                 throw new InvalidArgumentsError(ErrorSafe.getData().DEV_1);
             }
         }
+    }
+
+    protected validateAndConvertBinaryDataCandidate (candidate: any): Buffer | null
+    {
+        if (!isExist(candidate))
+        {
+            return null;
+        }
+
+        if (!_.isString(candidate))
+        {
+            throw new BadRequestError(ErrorSafe.getData().HTTP_21);
+        }
+
+        let binaryData: Buffer;
+
+        const isBase64: boolean = /^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{2}==)?$/.test(candidate);
+
+        if (isBase64)
+        {
+            try
+            {
+                binaryData = Buffer.from(candidate, "base64");
+            }
+            catch (error)
+            {
+                throw new BadRequestError(ErrorSafe.getData().HTTP_21);
+            }
+        }
+        else
+        {
+            try
+            {
+                binaryData = Buffer.from(candidate, "utf-8");
+            }
+            catch (error)
+            {
+                throw new BadRequestError(ErrorSafe.getData().HTTP_21);
+            }
+        }
+
+        return binaryData;
     }
 
     protected validateAndConvertBooleanCandidate (candidate: any): boolean | null
@@ -392,6 +438,11 @@ class Service
                 {
                     switch (Schema.identifyDefinitionBsonType(subCandidateDefinition))
                     {
+                        case BsonType.BinaryData:
+                        {
+                            convertedCandidate[key] = this.validateAndConvertBinaryDataCandidate(subCandidate);
+                            break;
+                        }
                         case BsonType.Boolean:
                         {
                             convertedCandidate[key] = this.validateAndConvertBooleanCandidate(subCandidate);
@@ -465,6 +516,11 @@ class Service
 
                 switch (schemaDefinition.items.bsonType)
                 {
+                    case BsonType.BinaryData:
+                    {
+                        convertedCandidate.push(this.validateAndConvertBinaryDataCandidate(value));
+                        break;
+                    }
                     case BsonType.Boolean:
                     {
                         convertedCandidate.push(this.validateAndConvertBooleanCandidate(value));
@@ -564,6 +620,11 @@ class Service
 
                         switch (Schema.identifyDefinitionBsonType(subDefinition))
                         {
+                            case BsonType.BinaryData:
+                            {
+                                convertedCandidate[language][key] = this.validateAndConvertBinaryDataCandidate(subCandidate);
+                                break;
+                            }
                             case BsonType.Boolean:
                             {
                                 convertedCandidate[language][key] = this.validateAndConvertBooleanCandidate(subCandidate);
@@ -619,6 +680,11 @@ class Service
 
                     switch (Schema.identifyDefinitionBsonType(definition))
                     {
+                        case BsonType.BinaryData:
+                        {
+                            convertedCandidate[language] = this.validateAndConvertBinaryDataCandidate(value);
+                            break;
+                        }
                         case BsonType.Boolean:
                         {
                             convertedCandidate[language] = this.validateAndConvertBooleanCandidate(value);

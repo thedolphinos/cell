@@ -1,6 +1,6 @@
 {
     "name": "@thedolphinos/cell",
-    "version": "0.199.1",
+    "version": "0.200.0",
     "description": "A JavaScript/TypeScript framework to build server side applications using Node.js, Express, and MongoDB.",
     "keywords": [
         "dolphinos",
@@ -17,14 +17,20 @@
     },
     "license": "MIT",
     "contributors": [
-        "Onur Cipe <onur@dolphinos.com>",
-        "Selma Cipe <selma@dolphinos.com>"
+        {
+            "name": "Onur Cipe",
+            "email": "onur@dolphinos.com"
+        },
+        {
+            "name": "Selma Cipe",
+            "email": "selma@dolphinos.com"
+        }
     ],
     "main": "dist/index.js",
     "types": "types/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "https://github.com/thedolphinos/cell.git"
+        "url": "git+https://github.com/thedolphinos/cell.git"
     },
     "scripts": {
         "build": "tsc",
@@ -49,5 +55,9 @@
         "@types/node": "^20",
         "@types/node-rsa": "^1",
         "typescript": "^5"
-    }
+    },
+    "directories": {
+        "doc": "docs"
+    },
+    "author": ""
 }
