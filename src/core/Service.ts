@@ -129,9 +129,9 @@ class Service
             return null;
         }
 
-        if (!_.isString(candidate))
+        if (Buffer.isBuffer(candidate))
         {
-            throw new BadRequestError(ErrorSafe.getData().HTTP_21);
+            return candidate;
         }
 
         let binaryData: Buffer;
@@ -159,6 +159,11 @@ class Service
             {
                 throw new BadRequestError(ErrorSafe.getData().HTTP_21);
             }
+        }
+
+        if (!Buffer.isBuffer(candidate))
+        {
+            throw new BadRequestError(ErrorSafe.getData().HTTP_21);
         }
 
         return binaryData;
